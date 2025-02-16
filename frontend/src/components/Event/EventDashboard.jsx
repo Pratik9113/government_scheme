@@ -23,7 +23,7 @@ const EventDashboard = ({ setActiveFilter, filterButtons, activeFilter, events, 
     );
 
     return (
-        <div className="bg-white">
+        <div className="bg-white  bg-transparent">
             <nav className="bg-white sticky shadow-sm top-0 z-50 border-b">
                 <div className="mx-auto px-4">
                     <div className="flex justify-between h-16">

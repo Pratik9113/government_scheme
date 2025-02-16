@@ -3,8 +3,9 @@ import axios from "axios"
 import { toast } from 'react-toastify';
 import { ImCross } from "react-icons/im";
 import './Login.css'
-
+import { useNavigate } from "react-router-dom";
 const Login = ({ setIsLogin, setIsGuestLogin }) => {
+    const navigate = useNavigate();
     const [currState, setCurrState] = useState("Login");
     const [data, setData] = useState({
         name: "",

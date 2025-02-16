@@ -22,7 +22,7 @@ const EventCard = ({ event, setSelectedEvent, socket }) => {
 
     return (
         <div
-            className="group bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer overflow-hidden m-2.5"
+            className="group bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer overflow-hidden m-2.5  bg-transparent"
             onClick={() => setSelectedEvent(event)}
         >
             <div className="relative">

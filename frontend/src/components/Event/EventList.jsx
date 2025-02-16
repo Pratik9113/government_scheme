@@ -98,7 +98,7 @@ const EventList = ({ isGuestLogin }) => {
     ];
 
     return (
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-8 bg-white bg-opacity-50">
             <EventDashboard
                 setActiveFilter={setActiveFilter}
                 filterButtons={filterButtons}
