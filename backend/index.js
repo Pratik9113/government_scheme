@@ -10,6 +10,7 @@ dotenv.config();
 const cookieParser = require("cookie-parser");
 const EventRouter = require("./routes/eventRoute.js");
 const EventModel = require("./models/EventSchema.js");
+const { default: axios } = require('axios');
 
 const {createServer} = require("http"); 
 const {Server} = require("socket.io");
@@ -82,7 +83,6 @@ app.post('/sms', async (req, res) => {
     try {
         const response = await axios.post("http://127.0.0.1:5000/negotiate", { input, from });
         const twiml = new MessagingResponse();
-        twiml.message('The Robots are coming!'); 
         twiml.message(response.data.response); 
         res.writeHead(200, { 'Content-Type': 'text/xml' });
         res.end(twiml.toString());
@@ -101,16 +101,16 @@ app.use("/event", EventRouter);
 
 
 const vendors = [
-    "whatsapp:+919594791079",
+    "whatsapp:+917999505967",
 ];
-const message = "I am looking to purchase raw materials to manufacture 100 sofas. My requirements include: Wood/plywood for frames Foam for cushions Upholstery (fabric or leather) Springs, nails, and other accessories My budget is ₹30,000. Please provide your price quote";
+const message = "I am looking to purchase wheat in bulk. My requirement is [100 quintals]. My budget is ₹30,000. Please provide your price quote";
 
 (async () => {
     for (const vendor of vendors) {
         try {
             await sendSMS(message, vendor);
             console.log(`Message sent to ${vendor}`);
-            const response = await axios.post("http://127.0.0.1:5000/sendMsgFromShopkeeper", { input: message, to: vendor });
+            const response = await axios.post("http://127.0.0.1:5000/send_msg_from_farmer", { input: message, to: vendor });
             console.log(`Message pushed to Flask server: ${response.data}`);
         } catch (error) {
             console.log(`Error sending SMS to ${vendor}:`, error.message);
