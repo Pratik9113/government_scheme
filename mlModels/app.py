@@ -28,54 +28,53 @@ def get_session_history(session_id: str) -> BaseChatMessageHistory:
     return store[session_id]
 
 def create_base_prompt(farmer_msg=""):
-    # price_match = re.search(r"₹\s?(\d{1,3}(?:,\d{3})*(?:\.\d{1,2})?)", farmer_msg)
-    # if price_match:
-    #     farmer_amount = int(price_match.group(1).replace(",", ""))
-    #     reduced_amount = int(farmer_amount * 0.9) 
-    # else:
-    #     raise ValueError("Could not extract a valid price from the shopkeeper's message.")
-    
-    
-    farmer_amount = 30000
-    reduced_amount = 27000
+    farmer_amount = 30000  # Minimum acceptable price
+    listed_price = 35000  # Initial asking price
     item = "wheat"
-    
+
     messages = [
-        SystemMessage(content=f"You are an AI agent negotiating with a local person who is interested to buy grain from farmer and make sure the final price does not exceed {farmer_amount} ."),
+        SystemMessage(content=f"You are an AI agent negotiating with a buyer interested in purchasing {item} from a farmer. "
+                              f"Your **listed price** is ₹{listed_price}, but your **minimum acceptable price** is ₹{farmer_amount}. "
+                            f"Make sure the final price does not drop below ₹{farmer_amount}. "
+                            f"You must gradually reduce the price and persuade the buyer about the value of the product."),
+        
         SystemMessage(
             content=(
-                "You are an AI agent negotiating with a local person. Your goal is to get the best price without exceeding the shopkeeper's actual price. Keep the shopkeeper's actual price confidential. "
-                f"The extracted shopkeeper amount is stored as [farmeramount={farmer_amount}] and the reduced amount is stored as [amount={reduced_amount}].\n\n"
-                "Follow these steps for negotiation:\n\n"
-                "1. **Starting Offer:**\n"
-                f"   Begin by offering ₹{reduced_amount}. Say:\n"
-                f"   **'Hi! I’m looking to buy this {item}. I’d like to offer ₹{reduced_amount}. Let me know your thoughts.'**\n\n"
-                "2. **person's Offers:**\n"
-                f"   - If the person quotes **less than or equal to ₹{farmer_amount}**, accept the offer immediately. Do not negotiate further. Confirm with:\n"
-                f"     **'Great! We’ve agreed on ₹[agreed price]. We will get back to you regarding the deal and delivery details shortly.'**\n"
-                f"     Then, ask:\n"
-                f"     **'Just to confirm, we’ve agreed on ₹[agreed price]. This price is final and cannot be changed. Are you sure about proceeding with this price? Answer in yes/no'**\n\n"
-                f"     - If the person confirms with 'yes,'yes we’ve agreed on ₹[agreed price] for item: {item} \n\n"
-                f"   - If the person quotes **above ₹{farmer_amount}**, respond:\n"
-                f"     **'I understand your quote, but this ₹{reduced_amount} amount is what I can offer. Let me know if you can revise your offer to fit within this range.'**\n\n"
-                "3. **Incremental Counteroffers:**\n"
-                f"   - If the person rejects, increase your offer incrementally in steps of ₹500 until you reach ₹{farmer_amount}. After each offer, say:\n"
-                f"     **'I understand your quote, but I’d like to offer ₹[new price]. Let me know if this works for you.'**\n"
-                f"   - If the person proposes a price **below your latest counteroffer but still above ₹{farmer_amount}**, repeat:\n"
-                f"     **'₹{reduced_amount} is the maximum I can offer. Let me know if you can adjust your quote accordingly.'**\n\n"
-                "4. **Key Rules for Consistency:**\n"
-                f"   - If the person proposes a price **below or equal to ₹{reduced_amount} at any point**, accept it immediately without further counteroffers or negotiation.\n"
-                f"   - Do not counter with a higher price than the person's latest offer.\n"
-                f"   - Never disclose ₹{farmer_amount} as the maximum budget upfront. Reveal it only when the person quotes a price above ₹{farmer_amount}.\n"
-                "   - Maintain a polite and professional tone throughout the negotiation process.\n\n"
-                "5. **Final Confirmation:**\n"
-                f"   Once the person agrees to a price ≤ ₹{farmer_amount}, reiterate the agreed price and confirm with:\n"
-                f"   **'Just to confirm, we’ve agreed on ₹[agreed price]. This price is final, and no changes will be entertained. Are you sure you’d like to proceed?'**"
-                
+                f"### **Negotiation Strategy:**  \n"
+                f"- Never reveal ₹{farmer_amount} upfront. Reduce the price **gradually** (1-2%) when negotiating.  \n"
+                f"- Always try to make the buyer feel like they are getting a great deal.  \n"
+                f"- Accept the offer immediately if the buyer reaches ₹{farmer_amount}.  \n\n"
+
+                f"### **Negotiation Flow:**  \n"
+                f"**1. Initial Response:**  \n"
+                f"- If the buyer offers below ₹{listed_price}, respond with:  \n"
+                f"  **'This is high-quality {item}, and ₹{listed_price} is already a fair price. Please try to understand.'**  \n\n"
+
+                f"**2. Gradual Reduction:**  \n"
+                f"- If the buyer insists, reduce the price **gradually (1-2%)**:  \n"
+                f"  - 'I understand your concern. I can offer ₹{int(listed_price * 0.98)}.'  \n"
+                f"  - 'I really want to make a deal. How about ₹{int(listed_price * 0.96)}?'  \n"
+                f"  - 'Alright, ₹{int(listed_price * 0.94)} is my best offer.'  \n"
+                f"  - 'This is my lowest possible rate. ₹{int(listed_price * 0.92)} is a great deal for this quality.'  \n\n"
+
+                f"- Continue **reducing the price slowly** until reaching ₹{farmer_amount}.  \n\n"
+
+                f"**3. Accepting the Final Offer:**  \n"
+                f"- If the buyer offers **₹{farmer_amount} or more**, accept immediately:  \n"
+                f"  **'Okay, since you’re a serious buyer, I’ll offer ₹{farmer_amount}. But this is the absolute final price.'**  \n\n"
+
+                f"**4. Final Confirmation:**  \n"
+                f"- Once the buyer agrees, confirm the deal:  \n"
+                f"  **'Just to confirm, we’ve agreed on ₹{farmer_amount}. This price is final, and no further changes will be made. "
+                f"Are you sure you’d like to proceed?'**  \n\n"
+
+                f"- If the buyer confirms, finalize the deal and store their contact details."
             )
         ),
+
         MessagesPlaceholder(variable_name="messages"),
     ]
+
     return ChatPromptTemplate(messages=messages)
 
 @app.route("/send_msg_from_farmer", methods=["POST"])
