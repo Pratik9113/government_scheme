@@ -1,4 +1,11 @@
-
+body{
+    background-image: url('https://images.unsplash.com/photo-1527580477540-6ef8bc65b8a3?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+    background-image: url('https://images.unsplash.com/photo-1527580477540-6ef8bc65b8a3?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); /* Replace with your image URL */
+    background-size: cover; /* Ensures the image covers the whole screen */
+    background-position: center; /* Centers the image */
+    background-repeat: no-repeat; /* Prevents tiling */
+    background-attachment: fixed; /* Keeps the image fixed while scrolling */
+}
 .login{
     position: relative;
     z-index: 1;
@@ -11,9 +18,9 @@
 }
 .login-container{
     place-self: center;
-    width: max(23vw,330px);
+    width: 380px;
     color : #808080;
-    background-color: white;
+    background-color: #F5E6CC;
     display: flex;
     flex-direction: column;
     gap: 25px;
@@ -26,7 +33,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: black;
+    color: rgb(72, 0, 255);
 }
 
 .login-input{
@@ -41,16 +48,26 @@
     padding: 10px;
     border-radius: 4px;
 }
-.login-container button{
+.login-button{
     border: none;
     padding: 10px;
     border-radius:  4px;
-    color : white;
-    background-color: red;
-    font-size: 15px;
+    color : #F5E6CC;
+    background-color: #DDA15E;
+    font-size: 20px;
     cursor: pointer;
+    width: 320px;
+}
+.guest-login{
+    padding: 10px;
+    border-radius:  4px;
+    color : #DDA15E;
+    justify-content: center;
+    font-size: 20px;
+    gap: 10px;
+    
 }
 
 .login span{
-    color: red;
+    color: #DDA15E;
 }

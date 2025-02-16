@@ -29,7 +29,7 @@ const Navbar = () => {
                             onClick={() => (navigate("/create"))}
                         >
                             <Calendar className="mr-2" size={20} />
-                            Create Event
+                            Create Event23
                         </button>
                         <button className="flex items-center px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
                             <UserCircle className="mr-2" size={20} />
