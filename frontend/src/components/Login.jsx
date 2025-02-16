@@ -51,13 +51,13 @@ const Login = ({ setIsLogin, setIsGuestLogin }) => {
 
     return (
         <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md bg-opacity-1 z-1">
-            <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm">
+            <div className="login-container">
                 <div className="flex justify-between items-center text-black">
                     <h2 className="text-xl font-semibold">{currState}</h2>
-                    <ImCross
+                    {/*<ImCross
                         onClick={() => setIsLogin(false)}
                         className="cursor-pointer text-xl"
-                    />
+                    />*/}
                 </div>
 
                 <form onSubmit={onLogin} className="mt-4 space-y-4">
@@ -93,7 +93,7 @@ const Login = ({ setIsLogin, setIsGuestLogin }) => {
 
                     <button
                         type="submit"
-                        className="w-full bg-red-500 text-white p-2 rounded-md font-semibold hover:bg-red-600 transition duration-300"
+                        className="login-button"
                     >
                         {currState === "SignUp" ? "Create an Account" : "Login"}
                     </button>
@@ -103,7 +103,7 @@ const Login = ({ setIsLogin, setIsGuestLogin }) => {
                     <p>
                         {currState === "Login" ? "Create an account" : "Already have an account?"}
                         <span
-                            className="text-red-500 font-semibold cursor-pointer ml-1"
+                            className="text-green-600 font-semibold cursor-pointer ml-1"
                             onClick={() => setCurrState(currState === "Login" ? "SignUp" : "Login")}
                         >
                             {currState === "Login" ? "Click here" : "Login here"}
@@ -112,7 +112,7 @@ const Login = ({ setIsLogin, setIsGuestLogin }) => {
                     {/* Guest Login Button */}
                     <button
                         onClick={onGuestLogin}
-                        className="w-full bg-gray-300 text-black p-2 rounded-md font-semibold hover:bg-gray-400 transition duration-300 mt-4"
+                        className="guest-login"
                     >
                         Continue as Guest
                     </button>
