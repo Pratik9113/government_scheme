@@ -16,6 +16,7 @@ const {createServer} = require("http");
 const {Server} = require("socket.io");
 const node_cron = require("./node-cron.js");
 const { sendSMS } = require("./send.js");
+const NegotiateRouter = require("./routes/negotiate.js");
 
 
 const app = express();
@@ -96,27 +97,9 @@ app.post('/sms', async (req, res) => {
 });
 app.use("/user", LoginRouter);
 app.use("/event", EventRouter);
+app.use("/farmer", NegotiateRouter);
 
 
-
-
-const vendors = [
-    "whatsapp:+917999505967",
-];
-const message = "I am looking to purchase wheat in bulk. My requirement is [100 quintals]. My budget is ₹35,000. Please provide your price quote";
-
-(async () => {
-    for (const vendor of vendors) {
-        try {
-            await sendSMS(message, vendor);
-            console.log(`Message sent to ${vendor}`);
-            const response = await axios.post("http://127.0.0.1:5000/send_msg_from_farmer", { input: message, to: vendor });
-            console.log(`Message pushed to Flask server: ${response.data}`);
-        } catch (error) {
-            console.log(`Error sending SMS to ${vendor}:`, error.message);
-        }
-    }
-})();
 
 
 

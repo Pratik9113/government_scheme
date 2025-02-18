@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import axios from "axios"
 const FarmerSubmissionForm = () => {
     const [selectedGrain, setSelectedGrain] = useState('');
     const [quantity, setQuantity] = useState('');
@@ -16,22 +16,22 @@ const FarmerSubmissionForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setStatus({ type: 'loading', message: 'Submitting prices...' });
-
+        const url = `${import.meta.env.VITE_BACKEND}/farmer/farmer-submission-form`;
         try {
-            const response = await fetch('/api/farmer/prices', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    grainType: selectedGrain,
-                    quantity,
-                    pricePerKg,
-                    notes
-                })
-            });
 
-            if (!response.ok) throw new Error('Submission failed');
+            const response = await axios.post(url, {
+                grainType: selectedGrain,
+                quantity,
+                pricePerKg,
+                notes
+            }, {
+                withCredentials: true,
+            })
+
+            if(response.data.data){
+                alert("Successfully");
+                
+            }
 
             setStatus({ type: 'success', message: 'Prices submitted successfully! Buyers will be notified of your new prices.' });
             setSelectedGrain('');
@@ -134,10 +134,10 @@ const FarmerSubmissionForm = () => {
 
                         {status.message && (
                             <div className={`p-4 rounded-md ${status.type === 'error'
-                                    ? 'bg-red-50 text-red-700'
-                                    : status.type === 'success'
-                                        ? 'bg-green-50 text-green-700'
-                                        : 'bg-blue-50 text-blue-700'
+                                ? 'bg-red-50 text-red-700'
+                                : status.type === 'success'
+                                    ? 'bg-green-50 text-green-700'
+                                    : 'bg-blue-50 text-blue-700'
                                 }`}>
                                 {status.message}
                             </div>
