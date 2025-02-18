@@ -29,7 +29,7 @@ const EventDashboard = ({ setActiveFilter, filterButtons, activeFilter, events, 
                     <div className="flex justify-between h-16">
                         <div className="flex items-center">
                             <span className="text-2xl font-bold text-gray-800">
-                                EventHub
+                                DigiKissan
                             </span>
                         </div>
 
@@ -37,7 +37,7 @@ const EventDashboard = ({ setActiveFilter, filterButtons, activeFilter, events, 
                             <div className="relative w-full">
                                 <input
                                     type="text"
-                                    placeholder="Search events..."
+                                    placeholder="Search Government Scheme ..."
                                     className="w-full px-4 py-2 pl-10 rounded-lg border border-gray-200 focus:border-blue-500 focus:outline-none bg-gray-50"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -51,7 +51,7 @@ const EventDashboard = ({ setActiveFilter, filterButtons, activeFilter, events, 
                                 className="px-4 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition-all"
                                 onClick={handleCreateEvent}
                             >
-                                Create Event
+                                Enter your Prompt
                             </button>
                         </div>
 

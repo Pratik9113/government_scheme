@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Login from './components/Login';
 import EventList from './components/Event/EventList';
 import CreateEventForm from './components/Event/CreateEventForm';
+import FarmerSubmissionForm from './components/Farmer/Farmer';
 
 const App = () => {
   const [isLogin, setIsLogin] = useState(false);
@@ -19,9 +20,13 @@ const App = () => {
           path='/'
           element={isGuestLogin || isLogin ? <EventList isGuestLogin={isGuestLogin} /> : <Login setIsLogin={setIsLogin} setIsGuestLogin={setIsGuestLogin} />}
         />
-        <Route
+        {/* <Route
           path='/create'
           element={<ProtectedCreateEventForm isLogin={isLogin} />}
+        /> */}
+        <Route
+          path='/create'
+          element={<FarmerSubmissionForm isLogin={isLogin} />}
         />
       </Routes>
     </Router>
@@ -34,11 +39,12 @@ const ProtectedCreateEventForm = ({ isLogin }) => {
   React.useEffect(() => {
     if (!isLogin) {
       toast.error("You must be logged in to create an event!");
-      navigate("/"); 
+      navigate("/");
     }
   }, []);
 
-  return isLogin ? <CreateEventForm /> : null; // Only render CreateEventForm if logged in or guest login
+  // return isLogin ? <CreateEventForm /> : null; // Only render CreateEventForm if logged in or guest login
+  return isLogin ? <FarmerSubmissionForm /> : null;
 }
 
 export default App;

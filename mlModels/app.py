@@ -37,7 +37,6 @@ def create_base_prompt(farmer_msg=""):
                               f"Your **listed price** is ₹{listed_price}, but your **minimum acceptable price** is ₹{farmer_amount}. "
                             f"Make sure the final price does not drop below ₹{farmer_amount}. "
                             f"You must gradually reduce the price and persuade the buyer about the value of the product."),
-        
         SystemMessage(
             content=(
                 f"### **Negotiation Strategy:**  \n"
