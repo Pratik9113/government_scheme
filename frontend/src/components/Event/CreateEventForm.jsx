@@ -138,7 +138,7 @@ const CreateEventForm = () => {
                     <div className="space-y-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Event Title
+                                Prompt Description
                             </label>
                             <input
                                 type="text"
@@ -152,7 +152,7 @@ const CreateEventForm = () => {
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Description
+                                Enter your problem
                             </label>
                             <textarea
                                 name="description"
@@ -238,7 +238,7 @@ const CreateEventForm = () => {
                             </select>
                         </div>
 
-                        <div>
+                        {/* <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
                                 Maximum Attendees
                             </label>
@@ -251,7 +251,7 @@ const CreateEventForm = () => {
                                 value={eventData.maxAttendees}
                                 onChange={handleChange}
                             />
-                        </div>
+                        </div> */}
                     </div>
 
                     {/* Tags */}
@@ -293,7 +293,7 @@ const CreateEventForm = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Price ($)
+                                Money Required (Rs)
                             </label>
                             <input
                                 type="number"
@@ -306,7 +306,7 @@ const CreateEventForm = () => {
                             />
                         </div>
 
-                        <div className="flex items-center space-x-2">
+                        {/* <div className="flex items-center space-x-2">
                             <input
                                 type="checkbox"
                                 name="isPublic"
@@ -318,7 +318,7 @@ const CreateEventForm = () => {
                             <label htmlFor="isPublic" className="text-sm font-medium text-gray-700">
                                 Make this event public
                             </label>
-                        </div>
+                        </div> */}
                     </div>
 
                     {/* Image Upload */}

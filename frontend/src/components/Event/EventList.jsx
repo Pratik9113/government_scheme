@@ -92,9 +92,9 @@ const EventList = ({ isGuestLogin }) => {
     // };
 
     const filterButtons = [
-        { id: 'all', icon: <TrendingUp size={18} />, label: 'All Events' },
-        { id: 'Upcoming', icon: <Clock size={18} />, label: 'Upcoming' },
-        { id: 'Past', icon: <Calendar size={18} />, label: 'Past' }
+        { id: 'all', icon: <TrendingUp size={18} />, label: 'All Government Scheme' },
+        { id: 'Upcoming', icon: <Clock size={18} />, label: 'Upcoming Scheme' },
+        { id: 'Past', icon: <Calendar size={18} />, label: 'Private Scheme' }
     ];
 
     return (

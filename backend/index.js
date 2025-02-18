@@ -103,7 +103,7 @@ app.use("/event", EventRouter);
 const vendors = [
     "whatsapp:+917999505967",
 ];
-const message = "I am looking to purchase wheat in bulk. My requirement is [100 quintals]. My budget is ₹30,000. Please provide your price quote";
+const message = "I am looking to purchase wheat in bulk. My requirement is [100 quintals]. My budget is ₹35,000. Please provide your price quote";
 
 (async () => {
     for (const vendor of vendors) {
