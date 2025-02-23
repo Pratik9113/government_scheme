@@ -17,6 +17,7 @@ const {Server} = require("socket.io");
 const node_cron = require("./node-cron.js");
 const { sendSMS } = require("./send.js");
 const NegotiateRouter = require("./routes/negotiate.js");
+const { schemeRouter } = require("./routes/scheme.js");
 
 
 const app = express();
@@ -98,15 +99,16 @@ app.post('/sms', async (req, res) => {
 app.use("/user", LoginRouter);
 app.use("/event", EventRouter);
 app.use("/farmer", NegotiateRouter);
+app.use("/scheme", schemeRouter);
 
 
 
 
 
 
-http.createServer(app).listen(1334, () => {
-    console.log(`Twilio webhook server running on port 1334`);
-});
+// http.createServer(app).listen(1334, () => {
+//     console.log(`Twilio webhook server running on port 1334`);
+// });
 
 
 
@@ -117,7 +119,7 @@ connectDB();
 node_cron();
 
 // Start the server and listen on the correct port
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3002;
 server.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
