@@ -10,6 +10,8 @@ from langchain_community.chat_message_histories import ChatMessageHistory
 import re
 import pandas as pd
 from flask_cors import CORS
+from dotenv import load_dotenv
+
 
 app = Flask(__name__)
 CORS(app)
@@ -107,6 +109,14 @@ def negotiate():
 
     print(ai_response.content)
     return jsonify({"response": ai_response.content})
+
+@app.route("/required-scheme-farmer", methods=['POST'])
+def required_scheme_farmer():
+    input_data = request.json.get("input", "")
+    if not input_data:
+        return jsonify({"error", "no input get"}), 400
+    
+
 
 
 if __name__ == "__main__":

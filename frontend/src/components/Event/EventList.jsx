@@ -65,32 +65,6 @@ const EventList = ({ isGuestLogin }) => {
         setFilteredEvents(filtered);
     }, [activeFilter, events]);
 
-    // const handleRegister = async (event) => {
-    //     const url = `${import.meta.env.VITE_BACKEND}/event/register`;
-    //     const data = { eventId: event._id };
-    //     try {
-    //         const response = await axios.post(url, data, {
-    //             withCredentials: true,
-    //             headers: {
-    //                 'Content-Type': 'application/json'
-    //             }
-    //         });
-    //         if (response.data.success) {
-    //             toast.success("Registered successfully.");
-    //             setSelectedEvent(event._id);
-    //             setIsRegistered(true); // Update registration status
-    //             if (socket) {
-    //                 socket.emit('enrollment', event._id); // Notify socket about the registration
-    //             }
-    //         } else {
-    //             toast.warning("Already registered for the event.");
-    //         }
-    //     } catch (error) {
-    //         console.error(error);
-    //         toast.error("Error registering for event.");
-    //     }
-    // };
-
     const filterButtons = [
         { id: 'all', icon: <TrendingUp size={18} />, label: 'All Government Scheme' },
         { id: 'Upcoming', icon: <Clock size={18} />, label: 'Upcoming Scheme' },
