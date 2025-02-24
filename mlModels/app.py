@@ -10,24 +10,85 @@ from langchain_community.chat_message_histories import ChatMessageHistory
 import re
 import pandas as pd
 from flask_cors import CORS
-from dotenv import load_dotenv
+from pymongo import MongoClient
+from bson.json_util import dumps
+from db_connection import db
+
+from googletrans import Translator
+import asyncio
+from deep_translator import GoogleTranslator 
+
 
 
 app = Flask(__name__)
 CORS(app)
 load_dotenv()
 
+
+
 api_key = os.getenv("api_key")
 if not api_key:
     raise ValueError("API key not found. Please set it in the .env file.")
 
+
+
+
 model = ChatGroq(model="gemma2-9b-it", groq_api_key=api_key)
 store = {}
+
+
+
+def translate_text(text, target_language="hi"):
+    """Translate text to the target language using Google Translator."""
+    try:
+        return GoogleTranslator(source='auto', target=target_language).translate(text)
+    except Exception as e:
+        print(f"Translation error: {e}")
+        return text 
+
+
+
+
+@app.route('/scheme', methods=['GET'])
+def scheme():
+    try:
+        if db is None:
+            return jsonify({"error": "MongoDB connection failed"}), 500
+
+        collections = db.list_collection_names()
+        print("Collections in DB:", collections)
+
+        if "schemes" not in collections:
+            return jsonify({"error": "Collection 'schemes' does not exist"}), 404
+
+        collection = db["test_schemes"]
+        data = list(collection.find({}, {"_id": 0}))
+
+        target_language = request.args.get('lang', 'hi')
+
+        for scheme in data:
+            for key in ["description", "state", "steps", "title"]:
+                if key in scheme and isinstance(scheme[key], str):
+                    scheme[key] = translate_text(scheme[key], target_language)
+
+            if "tags" in scheme and isinstance(scheme["tags"], list):
+                scheme["tags"] = [translate_text(tag, target_language) for tag in scheme["tags"]]
+
+        return jsonify(data)  
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+
 
 def get_session_history(session_id: str) -> BaseChatMessageHistory:
     if session_id not in store:
         store[session_id] = ChatMessageHistory()
     return store[session_id]
+
+
+
 
 def create_base_prompt(farmer_msg=""):
     farmer_amount = 30000  # Minimum acceptable price
@@ -78,6 +139,8 @@ def create_base_prompt(farmer_msg=""):
 
     return ChatPromptTemplate(messages=messages)
 
+
+
 @app.route("/send_msg_from_farmer", methods=["POST"])
 def send_msg_from_farmer():
     farmer_msg = request.json.get("input", "")
@@ -86,7 +149,6 @@ def send_msg_from_farmer():
     global base_prompt_template
     base_prompt_template = create_base_prompt(farmer_msg)
     return jsonify({"message": "farmer's message stored and prompt updated successfully."})
-
 
 
 @app.route("/negotiate", methods=["POST"])
@@ -122,92 +184,3 @@ def required_scheme_farmer():
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
 
-
-
-# from flask import Flask, request, jsonify
-# import os
-# from dotenv import load_dotenv
-# from langchain_core.chat_history import BaseChatMessageHistory
-# from langchain_core.runnables.history import RunnableWithMessageHistory
-# from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-# from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
-# from langchain_groq import ChatGroq
-# from langchain_community.chat_message_histories import ChatMessageHistory
-# import re
-# from flask_cors import CORS
-
-# app = Flask(__name__)
-# CORS(app)
-# load_dotenv()
-
-# # Load API key
-# api_key = os.getenv("api_key")
-# if not api_key:
-#     raise ValueError("API key not found. Please set it in the .env file.")
-
-# # Initialize AI model
-# model = ChatGroq(model="gemma2-9b-it", groq_api_key=api_key)
-# store = {}
-
-# # Function to get chat history for a session
-# def get_session_history(session_id: str) -> BaseChatMessageHistory:
-#     if session_id not in store:
-#         store[session_id] = ChatMessageHistory()
-#     return store[session_id]
-
-# # Function to create a negotiation prompt
-# def create_base_prompt(farmer_amount=30000, item="wheat"):
-#     reduced_amount = int(farmer_amount * 0.9)
-    
-#     messages = [
-#         SystemMessage(content=f"You are an AI agent negotiating with a buyer who wants to purchase {item}. Ensure the final price does not exceed ₹{farmer_amount} but aim to secure the best deal."),
-#         SystemMessage(content=(
-#             "You are a negotiation AI assisting a farmer. Follow these rules:\n\n"
-#             "1. Start with an offer of ₹{reduced_amount}.\n"
-#             "2. If the buyer agrees to a price ≤ ₹{farmer_amount}, accept immediately.\n"
-#             "3. If the buyer offers more than ₹{farmer_amount}, suggest a counteroffer within limits.\n"
-#             "4. Never reveal ₹{farmer_amount} as the maximum budget upfront.\n"
-#             "5. Always negotiate politely and professionally."
-#         )),
-#         MessagesPlaceholder(variable_name="messages"),
-#     ]
-#     return ChatPromptTemplate(messages=messages)
-
-# # Store prompt template globally
-# base_prompt_template = None
-
-# @app.route("/set_farmer_price", methods=["POST"])
-# def set_farmer_price():
-#     global base_prompt_template
-#     data = request.json
-#     farmer_amount = data.get("price", 30000)
-#     item = data.get("item", "wheat")
-    
-#     base_prompt_template = create_base_prompt(farmer_amount, item)
-#     return jsonify({"message": "Farmer's price set successfully."})
-
-# @app.route("/negotiate", methods=["POST"])
-# def negotiate():
-#     if base_prompt_template is None:
-#         return jsonify({"error": "Farmer price not set. Please set it first using /set_farmer_price."}), 400
-    
-#     data = request.json
-#     person_msg = data.get("input", "").strip()
-#     session_id = data.get("to", "default_session")
-    
-#     if not person_msg:
-#         return jsonify({"error": "No input provided."}), 400
-    
-#     config = {"configurable": {"session_id": session_id}}
-#     chain = base_prompt_template | model
-#     with_message_history = RunnableWithMessageHistory(chain, get_session_history)
-    
-#     ai_response = with_message_history.invoke(
-#         [HumanMessage(content=person_msg)],
-#         config=config,
-#     )
-    
-#     return jsonify({"response": ai_response.content})
-
-# if __name__ == "__main__":
-#     app.run(host="0.0.0.0", port=5000, debug=True)
