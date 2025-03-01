@@ -34,6 +34,8 @@ if not api_key:
 
 
 model = ChatGroq(model="gemma2-9b-it", groq_api_key=api_key)
+modelPrompt = ChatGroq(model="mixtral-8x7b-32768", groq_api_key=api_key)
+
 store = {}
 
 

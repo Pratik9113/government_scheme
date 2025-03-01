@@ -1,5 +1,5 @@
 from pymongo import MongoClient
-
+import os 
 mongo_uri = "mongodb+srv://pratikpatil9113:Patya%406878@cluster0.xsfvy.mongodb.net/test?retryWrites=true&w=majority"
 
 try:

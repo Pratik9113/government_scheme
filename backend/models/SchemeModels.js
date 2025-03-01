@@ -8,5 +8,5 @@ const SchemeSchema = new mongoose.Schema({
     link: { type: String }, 
   });
   
-const SchemaModel = mongoose.models.SchemeSchema || mongoose.model("SchemeSchema", SchemeSchema);
+const SchemaModel = mongoose.models.scheme || mongoose.model("scheme", SchemeSchema);
 module.exports = SchemaModel;
