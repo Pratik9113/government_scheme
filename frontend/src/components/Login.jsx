@@ -1,10 +1,14 @@
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next';
 import axios from "axios"
 import { toast } from 'react-toastify';
 import { ImCross } from "react-icons/im";
 import './Login.css'
 import { useNavigate } from "react-router-dom";
 const Login = ({ setIsLogin, setIsGuestLogin }) => {
+
+    const { t } = useTranslation();
+
     const navigate = useNavigate();
     const [currState, setCurrState] = useState("Login");
     const [data, setData] = useState({
@@ -35,8 +39,9 @@ const Login = ({ setIsLogin, setIsGuestLogin }) => {
             });
 
             if (response.data.data) {
-                setIsLogin(true);  // Successfully logged in
+                setIsLogin(true);
                 toast.success(response.data.message);
+                navigate("/");
             }
         } catch (error) {
             alert("Unsuccessfully login/signup");
@@ -59,6 +64,7 @@ const Login = ({ setIsLogin, setIsGuestLogin }) => {
                         onClick={() => setIsLogin(false)}
                         className="cursor-pointer text-xl"
                     />*/}
+                    {t("greeting")}
                 </div>
 
                 <form onSubmit={onLogin} className="mt-4 space-y-4">

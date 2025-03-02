@@ -3,7 +3,7 @@
 
 const translate = require("google-translate-api-x");
 
-const translateText = async(text, targetLang = "hi") => {
+const translateText = async(text, targetLang) => {
     try {
         let res = await translate(text, { to: targetLang });
         console.log(`Translated: ${res.text}`);

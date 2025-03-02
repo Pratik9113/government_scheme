@@ -1,22 +1,32 @@
 import React, { useState } from "react";
-import i18next from "i18next";
 import { FaGlobe } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 
-const LanguageSelector = () => {
+const LanguageSelector = ({ setLanguage }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const { i18n } = useTranslation();
+
     const languages = [
         { code: "en", lang: "English" },
-        { code: "fr", lang: "French" },
         { code: "hi", lang: "Hindi" },
+        { code: "mr", lang: "Marathi" },
+        { code: "bn", lang: "Bengali" },
+        { code: "ta", lang: "Tamil" },
+        { code: "te", lang: "Telugu" },
+        { code: "kn", lang: "Kannada" },
+        { code: "gu", lang: "Gujarati" },
+        { code: "pa", lang: "Punjabi" },
+        { code: "ml", lang: "Malayalam" },
+        { code: "ur", lang: "Urdu" },
+        { code: "as", lang: "Assamese" },
+        { code: "ne", lang: "Nepali" },
     ];
 
     const changeLanguage = (code) => {
-        i18next.changeLanguage(code);
+        i18n.changeLanguage(code);
         setIsOpen(false);
+        setLanguage(code);
     };
-
-    const {i18n} = useTranslation();
 
     return (
         <div className="fixed bottom-4 right-4">

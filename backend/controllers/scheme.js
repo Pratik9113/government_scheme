@@ -6,7 +6,8 @@ const cache = new Map();
 const getSchemeController = async (req, res) => {
     try {
         const data = await SchemaModel.find();
-        const targetLanguage = req.query.lang || "hi";
+        const targetLanguage = req.query.lang;
+        console.log("targetLanguage", targetLanguage);
 
         const textsToTranslate = new Set();
         data.forEach(scheme => {

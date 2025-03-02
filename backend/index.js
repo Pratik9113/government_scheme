@@ -119,7 +119,7 @@ connectDB();
 node_cron();
 
 // Start the server and listen on the correct port
-const port = process.env.PORT || 3002;
+const port = process.env.PORT || 3003;
 server.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
