@@ -6,8 +6,9 @@ const cache = new Map();
 const getSchemeController = async (req, res) => {
     try {
         const data = await SchemaModel.find();
-        const targetLanguage = req.query.lang;
-        console.log("targetLanguage", targetLanguage);
+        // const targetLanguage = req.query.lang || "mr";
+        const {lang} = req.query || "hi";
+        console.log("targetLanguage", lang);
 
         const textsToTranslate = new Set();
         data.forEach(scheme => {
@@ -27,7 +28,7 @@ const getSchemeController = async (req, res) => {
 
         const textArray = Array.from(textsToTranslate);
         if (textArray.length > 0) {
-            const translatedArray = await Promise.all(textArray.map(text => translateText(text, targetLanguage)));
+            const translatedArray = await Promise.all(textArray.map(text => translateText(text, lang)));
             
             textArray.forEach((originalText, index) => {
                 cache.set(originalText, translatedArray[index]);

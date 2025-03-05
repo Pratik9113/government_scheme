@@ -14,10 +14,6 @@ from pymongo import MongoClient
 from bson.json_util import dumps
 from db_connection import db
 
-from googletrans import Translator
-import asyncio
-from deep_translator import GoogleTranslator 
-
 
 
 app = Flask(__name__)
@@ -40,49 +36,6 @@ store = {}
 
 
 
-def translate_text(text, target_language="hi"):
-    """Translate text to the target language using Google Translator."""
-    try:
-        return GoogleTranslator(source='auto', target=target_language).translate(text)
-    except Exception as e:
-        print(f"Translation error: {e}")
-        return text 
-
-
-
-
-@app.route('/scheme', methods=['GET'])
-def scheme():
-    try:
-        if db is None:
-            return jsonify({"error": "MongoDB connection failed"}), 500
-
-        collections = db.list_collection_names()
-        print("Collections in DB:", collections)
-
-        if "schemes" not in collections:
-            return jsonify({"error": "Collection 'schemes' does not exist"}), 404
-
-        collection = db["test_schemes"]
-        data = list(collection.find({}, {"_id": 0}))
-
-        target_language = request.args.get('lang', 'hi')
-
-        for scheme in data:
-            for key in ["description", "state", "steps", "title"]:
-                if key in scheme and isinstance(scheme[key], str):
-                    scheme[key] = translate_text(scheme[key], target_language)
-
-            if "tags" in scheme and isinstance(scheme["tags"], list):
-                scheme["tags"] = [translate_text(tag, target_language) for tag in scheme["tags"]]
-
-        return jsonify(data)  
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
-
 
 def get_session_history(session_id: str) -> BaseChatMessageHistory:
     if session_id not in store:
@@ -93,7 +46,7 @@ def get_session_history(session_id: str) -> BaseChatMessageHistory:
 
 
 def create_base_prompt(farmer_msg=""):
-    farmer_amount = 30000  # Minimum acceptable price
+    farmer_amount = 30000  # Minimum acceptable price       
     listed_price = 35000  # Initial asking price
     item = "wheat"
 
@@ -170,6 +123,10 @@ def negotiate():
         [HumanMessage(content=person_message)],
         config=config,
     )
+    
+    messages = [
+        SystemMessage ( content = "You have to chech the message"),
+    ]
 
     print(ai_response.content)
     return jsonify({"response": ai_response.content})

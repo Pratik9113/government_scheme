@@ -7,21 +7,22 @@ import LanguageSelector from './components/language-selector';
 import DigiKissanNavbar from './components/Navbar';
 import Dashboard from './components/Dashboard/Dashboard';
 import SchemesDashboard from './components/Scheme/SchemesDashboard';
+import FarmerProductInterface from './components/Farmer/Farmer';
 
 const App = () => {
-  const [isLogin, setIsLogin] = useState(false); 
+  const [isLogin, setIsLogin] = useState(false);
   const [language, setLanguage] = useState('en');
 
   return (
     <Router>
-      <LanguageSelector setLanguage={setLanguage}/>
+      <LanguageSelector setLanguage={setLanguage} />
       <ToastContainer position="top-right" autoClose={3000} />
       <DigiKissanNavbar setIsLogin={setIsLogin} />
-
       <Routes>
-        <Route path='/login' element={isLogin ? <Navigate to="/user" /> : <Login setIsLogin={setIsLogin} />} />
-        <Route path='/' element={<Dashboard />} />
-        <Route path='/user' element={isLogin ? <SchemesDashboard language={language} /> : <Navigate to="/login" />} />
+        <Route path='/' element={isLogin ? <Navigate to="/farmer" /> : <Login setIsLogin={setIsLogin} />} />
+        <Route path='/dashboard' element={<Dashboard />} />
+        {/* <Route path='/user' element={isLogin ? <SchemesDashboard language={language} /> : <Navigate to="/login" />} /> */}
+        <Route path='/farmer' element={isLogin ? <FarmerProductInterface /> : ""} />
       </Routes>
     </Router>
   );

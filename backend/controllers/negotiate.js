@@ -2,35 +2,37 @@ const axios = require("axios");
 const negotiateModel = require("../models/negotiate");
 const { sendSMS } = require("../send");
 
-const buyerNegotiateController = async (req, res) => {  // Added req, res parameters
-    const { grainType, quantity, pricePerKg, notes } = req.body; // Fixed req.body()
+const buyerNegotiateController = async (req, res) => {  
+    const userId = req.userId;
+    const { grainType, cropType, pricePerKg, availableQuantity, description} = req.body; 
 
     try {
-        // Save negotiation to the database
         const buyerNegotiation = new negotiateModel({
-            grainType,
-            quantity,
-            pricePerKg,
-            notes
+            grainType, 
+            cropType, 
+            pricePerKg, 
+            availableQuantity, 
+            description
         });
 
-        await buyerNegotiation.save(); // Fixed incorrect variable name
+        await buyerNegotiation.save();
+        console.log("Negotiation saved successfully");
 
         const sellerPhones = [
             { "phone": "whatsapp:+917999505967", "name": "Rahul Traders" },
         ];
 
-        // Send SMS & Notify Flask Server in Parallel
         const tasks = sellerPhones.map(async (vendor) => {
             try {
                 await sendSMS(notes, vendor.phone);
                 console.log(`Message sent to ${vendor.phone}`);
 
                 const response = await axios.post("http://127.0.0.1:5000/send_msg_from_farmer", {
+                    userId: userId,
                     input: notes,
                     to: vendor.phone,
                     grainType: grainType,
-                    quantity: quantity,
+                    quantity: availableQuantity,
                     pricePerKg: pricePerKg,
                 });
 
@@ -42,7 +44,7 @@ const buyerNegotiateController = async (req, res) => {  // Added req, res parame
             }
         });
 
-        const results = await Promise.all(tasks); // Wait for all requests to complete
+        const results = await Promise.all(tasks); 
 
         return res.status(200).json({ success: true, message: "Successfully sent", results });
     } catch (error) {
