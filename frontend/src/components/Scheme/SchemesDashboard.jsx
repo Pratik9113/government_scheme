@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, ChevronDown, ArrowLeft, Menu, X } from 'lucide-react';
 import axios from "axios";
-const SchemesDashboard = () => {
+const SchemesDashboard = ({ language }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -15,15 +15,22 @@ const SchemesDashboard = () => {
     useEffect(() => {
         const getSchemeData = async () => {
             try {
-                const url = `${import.meta.env.VITE_BACKEND}/scheme/getScheme`
+                const url = `${import.meta.env.VITE_BACKEND}/scheme/getScheme?lang=${language}`;
+                console.log("Fetching data from:", url); 
                 const response = await axios.get(url);
-                setSchemes(response.data.data);
+                console.log("API Response:", response.data);
+                setSchemes(response.data.data || []);
             } catch (error) {
-                alert(error);
+                console.error("Error fetching scheme data:", error);
+                alert("Failed to load schemes. Please try again.");
             }
+        };
+
+        if (language) {  
+            getSchemeData();
         }
-        getSchemeData();
-    }, []);
+    }, [language]);
+
 
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 

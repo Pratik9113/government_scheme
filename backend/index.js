@@ -106,8 +106,8 @@ app.use("/scheme", schemeRouter);
 
 
 
-// http.createServer(app).listen(1334, () => {
-//     console.log(`Twilio webhook server running on port 1334`);
+// http.createServer(app).listen(1332, () => {
+//     console.log(`Twilio webhook server running on port 1332`);
 // });
 
 
@@ -119,7 +119,7 @@ connectDB();
 node_cron();
 
 // Start the server and listen on the correct port
-const port = process.env.PORT || 3002;
+const port = process.env.PORT || 3003;
 server.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
