@@ -23,9 +23,9 @@ const LanguageSelector = ({ setLanguage }) => {
     ];
 
     const changeLanguage = (code) => {
+        setLanguage(code);
         i18n.changeLanguage(code);
         setIsOpen(false);
-        setLanguage(code);
     };
 
     return (

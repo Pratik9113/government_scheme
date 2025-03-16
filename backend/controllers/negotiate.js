@@ -29,7 +29,7 @@ const buyerNegotiateController = async (req, res) => {
 
                 const response = await axios.post("http://127.0.0.1:5000/send_msg_from_farmer", {
                     userId: userId,
-                    input: notes,
+                    input: description,
                     to: vendor.phone,
                     grainType: grainType,
                     quantity: availableQuantity,

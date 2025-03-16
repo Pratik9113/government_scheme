@@ -16,7 +16,8 @@ const SchemesDashboard = ({ language }) => {
         const getSchemeData = async () => {
             try {
                 const url = `${import.meta.env.VITE_BACKEND}/scheme/getScheme?lang=${language}`;
-                console.log("Fetching data from:", url); 
+                console.log(url);
+                console.log("Fetching data from:", url);
                 const response = await axios.get(url);
                 console.log("API Response:", response.data);
                 setSchemes(response.data.data || []);
@@ -26,14 +27,11 @@ const SchemesDashboard = ({ language }) => {
             }
         };
 
-        if (language) {  
+        if (language) {
             getSchemeData();
         }
     }, [language]);
-
-
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
-
     return (
         <div className="flex flex-col lg:flex-row min-h-screen bg-gray-50">
             {/* Mobile Header */}
