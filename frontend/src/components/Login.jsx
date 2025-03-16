@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { ImCross } from "react-icons/im";
 import './Login.css'
 import { useNavigate } from "react-router-dom";
-const Login = ({ setIsLogin, setIsGuestLogin }) => {
+const Login = ({ setIsLogin }) => {
 
     const { t } = useTranslation();
 
@@ -41,10 +41,10 @@ const Login = ({ setIsLogin, setIsGuestLogin }) => {
             if (response.data.data) {
                 setIsLogin(true);
                 toast.success(response.data.message);
-                navigate("/");
+                navigate("/scheme-detail");
             }
         } catch (error) {
-            alert("Unsuccessfully login/signup");
+            alert(error);
             toast.error("User Not Registered or wrong credentials");
         }
     }

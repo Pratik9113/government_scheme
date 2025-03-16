@@ -18,13 +18,13 @@ const App = () => {
       <LanguageSelector setLanguage={setLanguage} />
       <ToastContainer position="top-right" autoClose={3000} />
       <DigiKissanNavbar setIsLogin={setIsLogin} />
+      <ChatBot />
       <Routes>
-        <Route path='/' element={isLogin ? <Navigate to="/user" /> : <Login setIsLogin={setIsLogin} />} />
-        <Route path='/dashboard' element={<Dashboard />} />
-        <Route path='/user' element={isLogin ? <SchemesDashboard language={language} /> : <Navigate to="/login" />} />
-        {/* <Route path='/farmer' element={isLogin ? <FarmerProductInterface /> : ""} /> */}
+        <Route path='/' element={<Dashboard />} />
+        <Route path='/login' element={<Login setIsLogin={setIsLogin} />} />
+        <Route path='/scheme-detail' element={isLogin ? <SchemesDashboard language={language} /> : <Navigate to="/login" />} />
       </Routes>
-      <ChatBot/>
+
     </Router>
   );
 };
