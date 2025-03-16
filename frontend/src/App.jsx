@@ -19,10 +19,10 @@ const App = () => {
       <ToastContainer position="top-right" autoClose={3000} />
       <DigiKissanNavbar setIsLogin={setIsLogin} />
       <Routes>
-        <Route path='/' element={isLogin ? <Navigate to="/farmer" /> : <Login setIsLogin={setIsLogin} />} />
+        <Route path='/' element={isLogin ? <Navigate to="/user" /> : <Login setIsLogin={setIsLogin} />} />
         <Route path='/dashboard' element={<Dashboard />} />
-        {/* <Route path='/user' element={isLogin ? <SchemesDashboard language={language} /> : <Navigate to="/login" />} /> */}
-        <Route path='/farmer' element={isLogin ? <FarmerProductInterface /> : ""} />
+        <Route path='/user' element={isLogin ? <SchemesDashboard language={language} /> : <Navigate to="/login" />} />
+        {/* <Route path='/farmer' element={isLogin ? <FarmerProductInterface /> : ""} /> */}
       </Routes>
     </Router>
   );
