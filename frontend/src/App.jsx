@@ -7,7 +7,7 @@ import LanguageSelector from './components/language-selector';
 import DigiKissanNavbar from './components/Navbar';
 import Dashboard from './components/Dashboard/Dashboard';
 import SchemesDashboard from './components/Scheme/SchemesDashboard';
-import FarmerProductInterface from './components/Farmer/Farmer';
+import ChatBot from './components/Chatbot/Chatbot';
 
 const App = () => {
   const [isLogin, setIsLogin] = useState(false);
@@ -24,6 +24,7 @@ const App = () => {
         <Route path='/user' element={isLogin ? <SchemesDashboard language={language} /> : <Navigate to="/login" />} />
         {/* <Route path='/farmer' element={isLogin ? <FarmerProductInterface /> : ""} /> */}
       </Routes>
+      <ChatBot/>
     </Router>
   );
 };
