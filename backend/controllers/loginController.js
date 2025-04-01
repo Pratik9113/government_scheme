@@ -22,11 +22,12 @@ const loginController = async(req, res) => {
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
             expiresIn: "1d",
         });
+        const userType = user.userType;
 
         res.cookie("token", token, {
             httpOnly: true, secure: true, sameSite: 'none'
         });
-        return res.status(200).json({data:user, token:token, message: "Login successful!", user });
+        return res.status(200).json({data:user, token:token, message: userType});
     } catch (error) {
         console.log("Error : ",error);
         return res.status(500).json({message: "Internal Server Error"});
@@ -35,7 +36,7 @@ const loginController = async(req, res) => {
 
 
 const signupController = async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, password,userType } = req.body;
     if (!name || !email || !password) {
         return res.status(400).json({ message: "Please fill all the fields" });
     }
@@ -52,7 +53,8 @@ const signupController = async (req, res) => {
         const newUser = new LoginModel({
             name,
             email,
-            password: hashedPassword, 
+            password: hashedPassword,
+            userType 
         });
         console.log(newUser);
         await newUser.save();

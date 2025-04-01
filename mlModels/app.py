@@ -7,139 +7,128 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from langchain_groq import ChatGroq
 from langchain_community.chat_message_histories import ChatMessageHistory
-import re
-import pandas as pd
 from flask_cors import CORS
-from pymongo import MongoClient
-from bson.json_util import dumps
+import traceback
 from db_connection import db
-
-
+import re 
 
 app = Flask(__name__)
-CORS(app)
-load_dotenv()
+CORS(app)  
+load_dotenv()  
 
-
-
-api_key = os.getenv("api_key")
+api_key = os.getenv("digikissan")
 if not api_key:
     raise ValueError("API key not found. Please set it in the .env file.")
 
-
-
-
 model = ChatGroq(model="gemma2-9b-it", groq_api_key=api_key)
-modelPrompt = ChatGroq(model="mixtral-8x7b-32768", groq_api_key=api_key)
 
 store = {}
-
-
-
 
 def get_session_history(session_id: str) -> BaseChatMessageHistory:
     if session_id not in store:
         store[session_id] = ChatMessageHistory()
     return store[session_id]
 
+negotiation_sessions = {}
 
-
-
-def create_base_prompt(farmer_msg=""):
-    farmer_amount = 30000  # Minimum acceptable price       
-    listed_price = 35000  # Initial asking price
-    item = "wheat"
-
+def create_base_prompt(grainType="", basePricePerKg=0, minPricePerKg=0, cropType="", description="", quantity=0):
     messages = [
-        SystemMessage(content=f"You are an AI agent negotiating with a buyer interested in purchasing {item} from a farmer. "
-                              f"Your **listed price** is ₹{listed_price}, but your **minimum acceptable price** is ₹{farmer_amount}. "
-                            f"Make sure the final price does not drop below ₹{farmer_amount}. "
-                            f"You must gradually reduce the price and persuade the buyer about the value of the product."),
-        SystemMessage(
-            content=(
-                f"### **Negotiation Strategy:**  \n"
-                f"- Never reveal ₹{farmer_amount} upfront. Reduce the price **gradually** (1-2%) when negotiating.  \n"
-                f"- Always try to make the buyer feel like they are getting a great deal.  \n"
-                f"- Accept the offer immediately if the buyer reaches ₹{farmer_amount}.  \n\n"
-
-                f"### **Negotiation Flow:**  \n"
-                f"**1. Initial Response:**  \n"
-                f"- If the buyer offers below ₹{listed_price}, respond with:  \n"
-                f"  **'This is high-quality {item}, and ₹{listed_price} is already a fair price. Please try to understand.'**  \n\n"
-
-                f"**2. Gradual Reduction:**  \n"
-                f"- If the buyer insists, reduce the price **gradually (1-2%)**:  \n"
-                f"  - 'I understand your concern. I can offer ₹{int(listed_price * 0.98)}.'  \n"
-                f"  - 'I really want to make a deal. How about ₹{int(listed_price * 0.96)}?'  \n"
-                f"  - 'Alright, ₹{int(listed_price * 0.94)} is my best offer.'  \n"
-                f"  - 'This is my lowest possible rate. ₹{int(listed_price * 0.92)} is a great deal for this quality.'  \n\n"
-
-                f"- Continue **reducing the price slowly** until reaching ₹{farmer_amount}.  \n\n"
-
-                f"**3. Accepting the Final Offer:**  \n"
-                f"- If the buyer offers **₹{farmer_amount} or more**, accept immediately:  \n"
-                f"  **'Okay, since you’re a serious buyer, I’ll offer ₹{farmer_amount}. But this is the absolute final price.'**  \n\n"
-
-                f"**4. Final Confirmation:**  \n"
-                f"- Once the buyer agrees, confirm the deal:  \n"
-                f"  **'Just to confirm, we’ve agreed on ₹{farmer_amount}. This price is final, and no further changes will be made. "
-                f"Are you sure you’d like to proceed?'**  \n\n"
-
-                f"- If the buyer confirms, finalize the deal and store their contact details."
-            )
-        ),
-
+        SystemMessage(content=f"""
+        You are an AI agent negotiating with a buyer interested in {grainType}.
+        - **Listed price per kg**: ₹{basePricePerKg}
+        - **Minimum acceptable price per kg**: ₹{minPricePerKg}
+        
+        **Negotiation Rules:**
+        1. Offer a fair price based on the buyer's quantity of {quantity} kg.
+        2. Always respond with:
+            - **"Final negotiated price: ₹X per kg for Y kg"** 
+            (Replace X with the negotiated price per kg, and Y with the quantity)
+        3. Do not add any extra text after stating the final price and quantity.
+        
+        Example response:
+        - "Final negotiated price: ₹38 per kg for 45 kg"
+        """),
         MessagesPlaceholder(variable_name="messages"),
     ]
-
+    
     return ChatPromptTemplate(messages=messages)
 
 
-
-@app.route("/send_msg_from_farmer", methods=["POST"])
-def send_msg_from_farmer():
-    farmer_msg = request.json.get("input", "")
-    if not farmer_msg:
-        return jsonify({"error": "No input provided for farmer message"}), 400
-    global base_prompt_template
-    base_prompt_template = create_base_prompt(farmer_msg)
-    return jsonify({"message": "farmer's message stored and prompt updated successfully."})
-
-
-@app.route("/negotiate", methods=["POST"])
+@app.route('/negotiate', methods=['POST'])
 def negotiate():
-    input_data = request.json.get("input", "")
-    person_phno = request.json.get("to", "")
-    if not input_data:
-        return jsonify({"error": "No input provided"}), 400
-    config = {"configurable": {"session_id": person_phno}}
-    if "base_prompt_template" not in globals():
-        return jsonify({"error": "farmer message not set. Please set it first using /farmer"}), 400
-    chain = base_prompt_template | model
-    with_message_history = RunnableWithMessageHistory(chain, get_session_history)
+    try:
+        data = request.json
+        user_message = data.get("message", "")
 
-    person_message = input_data.lower()
-    ai_response = with_message_history.invoke(
-        [HumanMessage(content=person_message)],
-        config=config,
-    )
-    
-    messages = [
-        SystemMessage ( content = "You have to chech the message"),
-    ]
+        negotiation_id = data.get("negotiationId")
+        user_id = data.get("userId")
 
-    print(ai_response.content)
-    return jsonify({"response": ai_response.content})
+        if negotiation_id not in negotiation_sessions:
+            negotiation_sessions[negotiation_id] = {
+                "userId": user_id,
+                "grainType": data.get("grainType"),
+                "basePricePerKg": data.get("pricePerKg"),
+                "minPricePerKg": int(data.get("pricePerKg") * 0.9),
+                "quantity": data.get("quantity"),
+                "cropType": data.get("cropType"),
+                "description": data.get("description"),
+                "negotiatedPricePerKg": None,  
+                "negotiatedQuantity": None,  
+            }
 
-@app.route("/required-scheme-farmer", methods=['POST'])
-def required_scheme_farmer():
-    input_data = request.json.get("input", "")
-    if not input_data:
-        return jsonify({"error", "no input get"}), 400
-    
+        if re.search(r'\bdeal done\b', user_message, re.IGNORECASE):
+            final_price_per_kg = negotiation_sessions[negotiation_id].get("negotiatedPricePerKg")
+            quantity = negotiation_sessions[negotiation_id].get("negotiatedQuantity")
 
+            if final_price_per_kg is None or quantity is None:
+                return jsonify({"error": "No negotiated price or quantity available."}), 400
 
+            total_price = final_price_per_kg * quantity
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+            return jsonify({
+                "reply": f"Status: Deal done! ✅ The final amount is ₹{total_price}. You can proceed with the payment.",
+                "showDealButton": True,
+                "totalPrice": total_price
+            })
 
+        chain = create_base_prompt(
+            grainType=negotiation_sessions[negotiation_id]["grainType"],
+            basePricePerKg=negotiation_sessions[negotiation_id]["basePricePerKg"],
+            minPricePerKg=negotiation_sessions[negotiation_id]["minPricePerKg"],
+            cropType=negotiation_sessions[negotiation_id]["cropType"],
+            description=negotiation_sessions[negotiation_id]["description"],
+            quantity=negotiation_sessions[negotiation_id]["quantity"]
+        ) | model
+
+        with_message_history = RunnableWithMessageHistory(chain, get_session_history)
+        ai_response = with_message_history.invoke(
+            [HumanMessage(content=user_message)],
+            config={"configurable": {"session_id": user_id}}
+        )
+
+        price_quantity_match = re.search(r'Final negotiated price:\s*₹(\d+(?:\.\d+)?)\s*per kg for (\d+) kg', ai_response.content)
+
+        if price_quantity_match:
+            negotiated_price_per_kg = float(price_quantity_match.group(1))
+            negotiated_quantity = int(price_quantity_match.group(2))
+
+            negotiation_sessions[negotiation_id]["negotiatedPricePerKg"] = negotiated_price_per_kg
+            negotiation_sessions[negotiation_id]["negotiatedQuantity"] = negotiated_quantity
+
+            total_price = negotiated_price_per_kg * negotiated_quantity
+
+            return jsonify({
+                "reply": f"Final negotiated price: ₹{negotiated_price_per_kg} per kg for {negotiated_quantity} kg. Total amount: ₹{total_price}.",
+                "showDealButton": False,
+                "totalPrice": total_price
+            })
+
+        return jsonify({"reply": ai_response.content, "showDealButton": False})
+
+    except Exception as e:
+        print("Error occurred:", str(e))
+        print("Stack trace:", traceback.format_exc())
+        return jsonify({"error": str(e)}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True) 

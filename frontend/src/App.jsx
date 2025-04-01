@@ -8,6 +8,8 @@ import DigiKissanNavbar from './components/Navbar';
 import Dashboard from './components/Dashboard/Dashboard';
 import SchemesDashboard from './components/Scheme/SchemesDashboard';
 import ChatBot from './components/Chatbot/Chatbot';
+import FarmerProductInterface from './components/Farmer/Farmer';
+import Vendor from './components/Vendor/Vendor';
 
 const App = () => {
   const [isLogin, setIsLogin] = useState(false);
@@ -15,16 +17,17 @@ const App = () => {
 
   return (
     <Router>
-      <LanguageSelector setLanguage={setLanguage} />
+      {/* <LanguageSelector setLanguage={setLanguage} /> */}
       <ToastContainer position="top-right" autoClose={3000} />
       <DigiKissanNavbar setIsLogin={setIsLogin} />
-      <ChatBot />
+      {/* <ChatBot /> */}
       <Routes>
         <Route path='/' element={<Dashboard />} />
         <Route path='/login' element={<Login setIsLogin={setIsLogin} />} />
         <Route path='/scheme-detail' element={isLogin ? <SchemesDashboard language={language} /> : <Navigate to="/login" />} />
+        <Route path='/farmer-submission-form' element={<FarmerProductInterface />} />
+        <Route path='/vendor-detail' element={isLogin ? <Vendor /> : <Navigate to="/login" />} />
       </Routes>
-
     </Router>
   );
 };

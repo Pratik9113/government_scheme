@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from "axios";
+
 const FarmerProductInterface = () => {
     // State to manage form inputs
     const [productDetails, setProductDetails] = useState({
@@ -35,7 +36,7 @@ const FarmerProductInterface = () => {
         const { name, value } = e.target;
         setProductDetails(prev => ({
             ...prev,
-            [name]: value
+            [name]: name === 'pricePerKg' || name === 'availableQuantity' ? Number(value) : value
         }));
     };
 
@@ -43,10 +44,12 @@ const FarmerProductInterface = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const url = `${import.meta.env.VITE_BACKEND}/farmer/farmer-submission-form`;
+
         try {
             const response = await axios.post(url, productDetails, {
                 withCredentials: true,
-            })
+            });
+
             if (response.data.success) {
                 alert("Product Registered Successfully");
                 setProductDetails({
@@ -55,15 +58,14 @@ const FarmerProductInterface = () => {
                     pricePerKg: '',
                     availableQuantity: '',
                     description: ''
-                })
+                });
             }
         } catch (error) {
-            console.log(error);
-            alert(error);
+            console.error("Submission Error:", error);
+            alert("Failed to register product. Please try again.");
         }
-
-
     };
+
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-green-100 via-green-50 to-green-100 py-12 px-4 sm:px-6 lg:px-8">

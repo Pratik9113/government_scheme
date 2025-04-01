@@ -7,18 +7,20 @@ const loginSchema = new mongoose.Schema({
     },  
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     password: {
         type: String,
         required: true
     },
-    confirmPassword: {
+    userType: {
         type: String,
+        enum: ["Farmer", "Vendor"], // Restricts values to either Farmer or Vendor
+        required: true
     }
-})
+}, { timestamps: true }); // Automatically adds createdAt & updatedAt
 
-
-const LoginModel =  mongoose.models.User ||  mongoose.model('User', loginSchema);
+const LoginModel = mongoose.models.User || mongoose.model('User', loginSchema);
 
 export default LoginModel;

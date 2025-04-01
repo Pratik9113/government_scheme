@@ -1,11 +1,15 @@
 import mongoose from "mongoose";
-const farmerSchema = new mongoose.Schema({
-    grainType:{type:String, required:true},
-    quantity:{type:Number, required:true},
-    pricePerKg:{type:Number, required:true},
-    notes:{type:String, required:true},
-    vendorId :{type:mongoose.Schema.Types.ObjectId, ref:"vendor"},
+
+const negotiateSchema = new mongoose.Schema({
+    grainType: { type: String, required: true },
+    cropType: { type: String, required: true },
+    availableQuantity: { type: Number, required: true },
+    pricePerKg: { type: Number, required: true },
+    description: { type: String, required: true },
+    buyers: [{ type: mongoose.Schema.Types.ObjectId, ref: "Buyer" }], 
+    createdAt: { type: Date, default: Date.now },
 });
 
-const farmerModel = mongoose.models.farmer || mongoose.model('farmer', farmerSchema);
-export default farmerModel;
+const negotiateModel = mongoose.models.negotiate || mongoose.model("negotiate", negotiateSchema);
+
+export default negotiateModel;

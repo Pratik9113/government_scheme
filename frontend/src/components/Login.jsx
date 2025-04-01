@@ -1,73 +1,64 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import axios from "axios"
+import axios from "axios";
 import { toast } from 'react-toastify';
-import { ImCross } from "react-icons/im";
-import './Login.css'
 import { useNavigate } from "react-router-dom";
+import './Login.css';
+
 const Login = ({ setIsLogin }) => {
-
     const { t } = useTranslation();
-
     const navigate = useNavigate();
+
     const [currState, setCurrState] = useState("Login");
     const [data, setData] = useState({
         name: "",
         email: "",
-        password: ""
+        password: "",
+        userType: "Farmer"
     });
 
+    // Handle input changes
     const onChangeHandler = (event) => {
-        const name = event.target.name;
-        const value = event.target.value;
-        setData(data => ({ ...data, [name]: value }));
-    }
+        const { name, value } = event.target;
+        setData(prev => ({ ...prev, [name]: value }));
+    };
 
+    // Handle login/sign-up submission
     const onLogin = async (event) => {
         event.preventDefault();
-        let newUrl = `${import.meta.env.VITE_BACKEND}`;
-        if (currState === 'Login') {
-            newUrl += "/user/login";
-        } else {
-            newUrl += "/user/signup";
-        }
+        let url = `${import.meta.env.VITE_BACKEND}/user`;
+
+        url += currState === "Login" ? "/login" : "/signup";
 
         try {
-            const response = await axios.post(newUrl, data, {
+            const response = await axios.post(url, data, {
                 withCredentials: true,
                 headers: { "Content-Type": "application/json" },
             });
 
             if (response.data.data) {
+                localStorage.setItem('token', response.data.token);
                 setIsLogin(true);
-                toast.success(response.data.message);
-                navigate("/scheme-detail");
+                toast.success("Successfully Logged In");
+                console.log(response.data.message);
+                if (response.data.message == "Farmer") navigate("/scheme-detail");
+                else navigate("/vendor-detail");
             }
         } catch (error) {
-            alert(error);
-            toast.error("User Not Registered or wrong credentials");
+            toast.error("User Not Registered or Wrong Credentials");
         }
-    }
-
-    // Handle guest login (bypassing login/signup)
-    const onGuestLogin = () => {
-        setIsGuestLogin(true);
-        toast.success("Logged in as Guest");
-    }
+    };
 
     return (
         <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md bg-opacity-1 z-1">
             <div className="login-container">
                 <div className="flex justify-between items-center text-black">
                     <h2 className="text-xl font-semibold">{currState}</h2>
-                    {/*<ImCross
-                        onClick={() => setIsLogin(false)}
-                        className="cursor-pointer text-xl"
-                    />*/}
                     {t("greeting")}
                 </div>
 
                 <form onSubmit={onLogin} className="mt-4 space-y-4">
+                    {/* Show Name Input only in SignUp */}
                     {currState === "SignUp" && (
                         <input
                             type="text"
@@ -79,6 +70,21 @@ const Login = ({ setIsLogin }) => {
                             className="w-full p-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
                         />
                     )}
+
+                    {/* Show User Type Selection only in SignUp */}
+                    {currState === "SignUp" && (
+                        <select
+                            name="userType"
+                            value={data.userType}
+                            onChange={onChangeHandler}
+                            required
+                            className="w-full p-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                        >
+                            <option value="Farmer">Farmer</option>
+                            <option value="Vendor">Vendor</option>
+                        </select>
+                    )}
+
                     <input
                         type="email"
                         name="email"
@@ -86,8 +92,9 @@ const Login = ({ setIsLogin }) => {
                         value={data.email}
                         onChange={onChangeHandler}
                         required
-                        className="w-full p-2  text-black border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                        className="w-full p-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
                     />
+
                     <input
                         type="password"
                         name="password"
@@ -95,13 +102,10 @@ const Login = ({ setIsLogin }) => {
                         value={data.password}
                         onChange={onChangeHandler}
                         required
-                        className="w-full p-2  text-black border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                        className="w-full p-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
                     />
 
-                    <button
-                        type="submit"
-                        className="login-button"
-                    >
+                    <button type="submit" className="login-button">
                         {currState === "SignUp" ? "Create an Account" : "Login"}
                     </button>
                 </form>
@@ -116,17 +120,10 @@ const Login = ({ setIsLogin }) => {
                             {currState === "Login" ? "Click here" : "Login here"}
                         </span>
                     </p>
-                    {/* Guest Login Button */}
-                    <button
-                        onClick={onGuestLogin}
-                        className="guest-login"
-                    >
-                        Continue as Guest
-                    </button>
                 </div>
             </div>
         </div>
     );
-}
+};
 
 export default Login;
