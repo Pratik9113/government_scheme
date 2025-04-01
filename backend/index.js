@@ -54,6 +54,7 @@ app.use("/scheme", schemeRouter);
 app.use("/api/farmer-assistant/chat", farmerChat);
 app.use("/user-prompt", PromptRouter);
 app.use("/vendor", VendorRouter);
+app.use("/razorpay",);
 
 
 // http.createServer(app).listen(1332, () => {

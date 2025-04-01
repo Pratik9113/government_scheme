@@ -8,6 +8,18 @@ const VendorChatBot = ({ userId, negotiation, closeChat }) => {
     const [showDealButton, setShowDealButton] = useState(false);
     const messagesEndRef = useRef(null);
 
+    const handlePayment = async () => {
+        try {
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND}/payment`, {
+                negotiationId: negotiation._id,
+                userId: userId,
+            });
+            console.log('Payment response:', response.data);
+            // Handle payment success or failure here
+        } catch (error) {
+            console.error('Error processing payment:', error);
+        }
+    }
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
@@ -81,7 +93,7 @@ const VendorChatBot = ({ userId, negotiation, closeChat }) => {
                 <div className="mt-4 flex justify-center">
                     <button
                         className="bg-green-500 text-white px-4 py-2 rounded"
-                        onClick={() => alert("Deal has been completed!")}
+                        onClick={() => handlePayment()}
                     >
                         Teri itne mei deal hui hai
                     </button>
