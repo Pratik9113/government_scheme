@@ -1,0 +1,11 @@
+python-dotenv
+langchain
+flask
+langchain_community
+langchain_groq
+pandas
+flask-cors
+Flask-PyMongo
+PyMongo
+googletrans
+deep_translator
