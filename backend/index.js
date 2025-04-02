@@ -25,6 +25,7 @@ import crypto from 'node:crypto';
 import jwtAuth from "./middlewares/jwtAuth.js";
 import negotiateModel from "./models/negotiate.js";
 import BuyerModel from "./models/Buyer.js";
+import BuyerRouter from "./routes/buyer.js";
 
 const app = express();
 const server = createServer(app); 
@@ -63,6 +64,7 @@ app.use("/scheme", schemeRouter);
 app.use("/api/farmer-assistant/chat", farmerChat);
 app.use("/user-prompt", PromptRouter);
 app.use("/vendor", VendorRouter);
+app.use("/buyers", BuyerRouter);
 
 
 

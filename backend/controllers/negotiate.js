@@ -10,7 +10,8 @@ const buyerNegotiateController = async (req, res) => {
             cropType, 
             pricePerKg, 
             availableQuantity, 
-            description
+            description,
+            farmer:userId,
         });
 
         const savedNegotiation = await buyerNegotiation.save();
