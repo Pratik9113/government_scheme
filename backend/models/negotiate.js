@@ -8,7 +8,7 @@ const negotiateSchema = new mongoose.Schema({
     cropType : {type:String, required:true},
     buyer : [{
         type:mongoose.Schema.Types.ObjectId,
-        ref : 'Buyer'
+        ref : 'User'
     }]
 },{timestamps:true})
 

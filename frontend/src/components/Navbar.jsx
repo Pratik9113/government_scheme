@@ -1,45 +1,153 @@
+// import React, { useState } from 'react';
+// import { Search, ArrowRight, Sun, Menu, X } from 'lucide-react';
+// import { useNavigate } from 'react-router-dom';
+
+// const DigiKissanNavbar = ({ setIsLogin }) => {
+//     const [isMenuOpen, setIsMenuOpen] = useState(false);
+//     const navigate = useNavigate();
+
+//     const toggleMenu = () => {
+//         setIsMenuOpen(!isMenuOpen);
+//     };
+//     const handleSignIn = (e) => {
+//         e.preventDefault();
+//         setIsLogin(true);
+//         navigate("/login");
+//     }
+
+//     return (
+//         <nav className="bg-white shadow-md w-full">
+//             {/* Desktop Navbar */}
+//             <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
+//                 <div className="flex justify-between h-16">
+//                     {/* Logo Section */}
+//                     <div className="flex items-center">
+//                         <img src='' alt="Government of India emblem"
+//                             className="h-12 w-auto mr-3"
+//                         />
+//                         <div className="font-bold text-xl sm:text-2xl">
+//                             <span className="text-green-600">Digi</span>
+//                             <span className="text-gray-800">Kissan</span>
+//                         </div>
+//                     </div>
+
+//                     {/* Search Bar - Hidden on mobile */}
+//                     <div className="hidden md:flex items-center flex-1 max-w-md mx-4">
+//                         <div className="w-full relative">
+//                             <input
+//                                 type="text"
+//                                 placeholder="Enter scheme name to search..."
+//                                 className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+//                             />
+//                             <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
+//                                 <Search size={20} />
+//                             </button>
+//                         </div>
+//                     </div>
+
+//                     {/* Controls - Hidden on mobile */}
+//                     <div className="hidden md:flex items-center">
+//                         <button className="bg-green-600 text-white px-4 py-2 rounded flex items-center mr-3 hover:bg-green-700 transition-colors" onClick={handleSignIn}>
+//                             <span>Sign In</span>
+//                             <ArrowRight size={16} className="ml-1" />
+//                         </button>
+//                         <div className="bg-green-600 text-white w-10 h-10 rounded-full flex items-center justify-center mr-3 font-medium">
+//                             Eng
+//                         </div>
+//                         <button className="bg-gray-800 text-white w-10 h-10 rounded-full flex items-center justify-center">
+//                             <Sun size={20} />
+//                         </button>
+//                     </div>
+
+//                     {/* Mobile Menu Button */}
+//                     <div className="md:hidden flex items-center">
+//                         <button
+//                             onClick={toggleMenu}
+//                             className="text-gray-700 hover:text-gray-900 focus:outline-none"
+//                         >
+//                             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+//                         </button>
+//                     </div>
+//                 </div>
+//             </div>
+
+
+//             {/* Mobile Search Bar */}
+//             <div className="md:hidden px-4 pb-3">
+//                 <div className="relative">
+//                     <input
+//                         type="text"
+//                         placeholder="Enter scheme name to search..."
+//                         className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+//                     />
+//                     <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
+//                         <Search size={20} />
+//                     </button>
+//                 </div>
+//             </div>
+
+//             {/* Mobile Menu */}
+//             {isMenuOpen && (
+//                 <div className="md:hidden bg-white pt-2 pb-4 border-t border-gray-200">
+//                     <div className="flex flex-col space-y-3 px-4">
+//                         <button className="bg-green-600 text-white px-4 py-2 rounded flex items-center justify-center" onClick={handleSignIn}>
+//                             <span>Sign In</span>
+//                             <ArrowRight size={16} className="ml-1" />
+//                         </button>
+//                         <div className="flex justify-between">
+//                             <div className="bg-green-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-medium">
+//                                 Eng
+//                             </div>
+//                             <button className="bg-gray-800 text-white w-10 h-10 rounded-full flex items-center justify-center">
+//                                 <Sun size={20} />
+//                             </button>
+//                         </div>
+//                     </div>
+//                 </div>
+//             )}
+//         </nav>
+//     );
+// };
+
+// export default DigiKissanNavbar;
+
 import React, { useState } from 'react';
-import { Search, ArrowRight, Sun, Menu, X } from 'lucide-react';
+import { Search, ArrowRight, Sun, Menu, X, Wheat, ShoppingCart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const DigiKissanNavbar = ({ setIsLogin }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const navigate = useNavigate();
 
-    const toggleMenu = () => {
-        setIsMenuOpen(!isMenuOpen);
-    };
+    const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
     const handleSignIn = (e) => {
         e.preventDefault();
         setIsLogin(true);
         navigate("/login");
-    }
+    };
+    const handleFarmerSubmission = () => navigate("/farmer-submission-form");
+    const handleBuyerPage = () => navigate("/buyer-section");
 
     return (
         <nav className="bg-white shadow-md w-full">
-            {/* Desktop Navbar */}
-            <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between h-16">
+            <div className="max-w-10xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex justify-between items-center h-16">
                     {/* Logo Section */}
-                    <div className="flex items-center">
-                        <img
-                            src="data:image/jpeg;base64,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"
-                            alt="Government of India emblem"
-                            className="h-12 w-auto mr-3"
-                        />
-                        <div className="font-bold text-xl sm:text-2xl">
+                    <div className="flex items-center space-x-3">
+                        <img src='' alt="Government of India emblem" className="h-12 w-auto" />
+                        <div className="font-bold text-2xl">
                             <span className="text-green-600">Digi</span>
                             <span className="text-gray-800">Kissan</span>
                         </div>
                     </div>
 
-                    {/* Search Bar - Hidden on mobile */}
-                    <div className="hidden md:flex items-center flex-1 max-w-md mx-4">
-                        <div className="w-full relative">
+                    {/* Search Bar */}
+                    <div className="hidden md:flex items-center flex-1 max-w-lg mx-4">
+                        <div className="relative w-full">
                             <input
                                 type="text"
-                                placeholder="Enter scheme name to search..."
-                                className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                placeholder="Search schemes..."
+                                className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-green-500 focus:outline-none"
                             />
                             <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
                                 <Search size={20} />
@@ -47,13 +155,18 @@ const DigiKissanNavbar = ({ setIsLogin }) => {
                         </div>
                     </div>
 
-                    {/* Controls - Hidden on mobile */}
-                    <div className="hidden md:flex items-center">
-                        <button className="bg-green-600 text-white px-4 py-2 rounded flex items-center mr-3 hover:bg-green-700 transition-colors" onClick={handleSignIn}>
-                            <span>Sign In</span>
-                            <ArrowRight size={16} className="ml-1" />
+                    {/* Controls */}
+                    <div className="hidden md:flex items-center space-x-4">
+                        <button className="bg-green-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-green-700 transition" onClick={handleSignIn}>
+                            Sign In <ArrowRight size={16} className="ml-1" />
                         </button>
-                        <div className="bg-green-600 text-white w-10 h-10 rounded-full flex items-center justify-center mr-3 font-medium">
+                        <button className="bg-yellow-500 text-white px-4 py-2 rounded-lg flex items-center hover:bg-yellow-600 transition" onClick={handleFarmerSubmission}>
+                            Grain <Wheat size={16} className="ml-1" />
+                        </button>
+                        <button className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center hover:bg-blue-600 transition" onClick={handleBuyerPage}>
+                            Buyer <ShoppingCart size={16} className="ml-1" />
+                        </button>
+                        <div className="bg-green-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-medium">
                             Eng
                         </div>
                         <button className="bg-gray-800 text-white w-10 h-10 rounded-full flex items-center justify-center">
@@ -63,37 +176,25 @@ const DigiKissanNavbar = ({ setIsLogin }) => {
 
                     {/* Mobile Menu Button */}
                     <div className="md:hidden flex items-center">
-                        <button
-                            onClick={toggleMenu}
-                            className="text-gray-700 hover:text-gray-900 focus:outline-none"
-                        >
+                        <button onClick={toggleMenu} className="text-gray-700 hover:text-gray-900 focus:outline-none">
                             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
                         </button>
                     </div>
                 </div>
             </div>
 
-            {/* Mobile Search Bar */}
-            <div className="md:hidden px-4 pb-3">
-                <div className="relative">
-                    <input
-                        type="text"
-                        placeholder="Enter scheme name to search..."
-                        className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                    />
-                    <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
-                        <Search size={20} />
-                    </button>
-                </div>
-            </div>
-
             {/* Mobile Menu */}
             {isMenuOpen && (
-                <div className="md:hidden bg-white pt-2 pb-4 border-t border-gray-200">
+                <div className="md:hidden bg-white border-t border-gray-200 py-3">
                     <div className="flex flex-col space-y-3 px-4">
-                        <button className="bg-green-600 text-white px-4 py-2 rounded flex items-center justify-center" onClick={handleSignIn}>
-                            <span>Sign In</span>
-                            <ArrowRight size={16} className="ml-1" />
+                        <button className="bg-green-600 text-white px-4 py-2 rounded-lg flex items-center justify-center" onClick={handleSignIn}>
+                            Sign In <ArrowRight size={16} className="ml-1" />
+                        </button>
+                        <button className="bg-yellow-500 text-white px-4 py-2 rounded-lg flex items-center justify-center" onClick={handleFarmerSubmission}>
+                            Grain <Wheat size={16} className="ml-1" />
+                        </button>
+                        <button className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center justify-center" onClick={handleBuyerPage}>
+                            Buyer <ShoppingCart size={16} className="ml-1" />
                         </button>
                         <div className="flex justify-between">
                             <div className="bg-green-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-medium">

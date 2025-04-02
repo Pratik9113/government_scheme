@@ -59,6 +59,10 @@ const Payment = () => {
                             ...response,
                             id,
                             budget,
+                            quantity,
+                            priceperkg,
+                        }, {
+                            withCredentials: true,
                         });
                         alert("Payment verification successful.");
                     } catch (verifyError) {

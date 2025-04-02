@@ -22,6 +22,9 @@ import PromptRouter from "./routes/promptRoute.js";
 import VendorRouter from "./routes/vendor.js";
 import Razorpay from "razorpay";
 import crypto from 'node:crypto';
+import jwtAuth from "./middlewares/jwtAuth.js";
+import negotiateModel from "./models/negotiate.js";
+import BuyerModel from "./models/Buyer.js";
 
 const app = express();
 const server = createServer(app); 
@@ -98,9 +101,12 @@ app.post('/razorpay/order', async (req, res) => {
 
 
 
-app.post('/razorpay/verify', async (req, res) => {
+app.post('/razorpay/verify',jwtAuth, async (req, res) => {
+    const userId = req.userId;
+    console.log("User id" , userId);
   try {
-      const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+      const { id, budget, quantity, priceperkg, razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+
 
       if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
           return res.status(400).json({ error: 'Missing payment details' });
@@ -114,12 +120,37 @@ app.post('/razorpay/verify', async (req, res) => {
           return res.status(400).json({ error: 'Invalid payment signature' });
       }
 
-      res.json({
-          success: true,
-          message: 'Payment verified successfully',
-          orderId: razorpay_order_id,
-          paymentId: razorpay_payment_id,
-      });
+      const updatedNegotiate = await negotiateModel.findByIdAndUpdate(
+        id,
+        { $push: { buyer: userId } }, // Add buyer ID
+        { new: true }
+    );
+
+    if (!updatedNegotiate) {
+        return res.status(404).json({ error: 'Negotiation not found' });
+    }
+
+    const totalAmount = quantity * priceperkg;
+
+    const newBuyer = new BuyerModel({
+        negotiation: id, // Negotiation ID
+        buyer: userId,   // Buyer ID
+        quantity,
+        pricePerKg: priceperkg,
+        totalAmount,
+        status: 'Pending', // Default status
+    });
+
+    await newBuyer.save();
+
+    res.json({
+        success: true,
+        message: 'Payment verified & buyer details saved successfully',
+        orderId: razorpay_order_id,
+        paymentId: razorpay_payment_id,
+        negotiation: updatedNegotiate,
+        buyerDetails: newBuyer
+    });
   } catch (error) {
       console.error('Payment verification error:', error);
       res.status(500).json({ error: 'Internal server error' });
