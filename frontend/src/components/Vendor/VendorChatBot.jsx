@@ -1,24 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-
+import { useNavigate } from "react-router-dom";
 const VendorChatBot = ({ userId, negotiation, closeChat }) => {
     const [messages, setMessages] = useState([]);
     const [inputMessage, setInputMessage] = useState('');
     const [loading, setLoading] = useState(false);
     const [showDealButton, setShowDealButton] = useState(false);
+    const [final_price_per_kg, set_final_price_per_kg] = useState(0);
+    const [vendor_quantity, set_vendor_quantity] = useState(0);
+    const [total_price, set_total_price] = useState(0);
+    const [negId, setNegId] = useState('');
+    const navigate = useNavigate();
     const messagesEndRef = useRef(null);
 
     const handlePayment = async () => {
-        try {
-            const response = await axios.post(`${import.meta.env.VITE_BACKEND}/payment`, {
-                negotiationId: negotiation._id,
-                userId: userId,
-            });
-            console.log('Payment response:', response.data);
-            // Handle payment success or failure here
-        } catch (error) {
-            console.error('Error processing payment:', error);
-        }
+        alert(`We Are redirect to the payment form , Purchase confirmed! ${vendor_quantity} units of ${negId} and   ${final_price_per_kg} for $${total_price}`);
+        navigate(`/payment?quantity=${vendor_quantity}&budget=${total_price}&id=${negId}&priceperkg=${final_price_per_kg}`);
+        onClose();
     }
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -42,10 +40,15 @@ const VendorChatBot = ({ userId, negotiation, closeChat }) => {
                 description: negotiation.description,
                 message: inputMessage,
             });
+            console.log("respose", response);
 
             // Update the message and show the button if required
             setMessages(prev => [...prev, { sender: 'Bot', text: response.data.reply }]);
             setShowDealButton(response.data.showDealButton);
+            set_final_price_per_kg(response.data.pricePerKg);
+            set_vendor_quantity(response.data.quantity);
+            set_total_price(response.data.totalPrice);
+            setNegId(response.data.negotiationId);
         } catch (error) {
             console.error('Error sending message:', error);
             setMessages(prev => [...prev, { sender: 'Bot', text: "Error: Unable to get a response." }]);
@@ -93,9 +96,9 @@ const VendorChatBot = ({ userId, negotiation, closeChat }) => {
                 <div className="mt-4 flex justify-center">
                     <button
                         className="bg-green-500 text-white px-4 py-2 rounded"
-                        onClick={() => handlePayment()}
+                        onClick={handlePayment}
                     >
-                        Teri itne mei deal hui hai
+                        Complete Purchase
                     </button>
                 </div>
             )}

@@ -10,6 +10,7 @@ import SchemesDashboard from './components/Scheme/SchemesDashboard';
 import ChatBot from './components/Chatbot/Chatbot';
 import FarmerProductInterface from './components/Farmer/Farmer';
 import Vendor from './components/Vendor/Vendor';
+import Payment from './components/Vendor/Payment';
 
 const App = () => {
   const [isLogin, setIsLogin] = useState(false);
@@ -27,6 +28,7 @@ const App = () => {
         <Route path='/scheme-detail' element={isLogin ? <SchemesDashboard language={language} /> : <Navigate to="/login" />} />
         <Route path='/farmer-submission-form' element={<FarmerProductInterface />} />
         <Route path='/vendor-detail' element={isLogin ? <Vendor /> : <Navigate to="/login" />} />
+        <Route path="/payment" element={<Payment />} />
       </Routes>
     </Router>
   );

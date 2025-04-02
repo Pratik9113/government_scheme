@@ -68,7 +68,7 @@ def negotiate():
                 "userId": user_id,
                 "grainType": data.get("grainType"),
                 "basePricePerKg": data.get("pricePerKg"),
-                "minPricePerKg": int(data.get("pricePerKg") * 0.9),
+                "minPricePerKg": int(data.get("pricePerKg") * 0.94),
                 "quantity": data.get("quantity"),
                 "cropType": data.get("cropType"),
                 "description": data.get("description"),
@@ -88,7 +88,10 @@ def negotiate():
             return jsonify({
                 "reply": f"Status: Deal done! ✅ The final amount is ₹{total_price}. You can proceed with the payment.",
                 "showDealButton": True,
-                "totalPrice": total_price
+                "totalPrice": total_price,
+                "negotiationId": negotiation_id,  
+                "pricePerKg": final_price_per_kg,  # Negotiated price
+                "quantity": quantity  # Negotiated quantity
             })
 
         chain = create_base_prompt(
@@ -120,7 +123,10 @@ def negotiate():
             return jsonify({
                 "reply": f"Final negotiated price: ₹{negotiated_price_per_kg} per kg for {negotiated_quantity} kg. Total amount: ₹{total_price}.",
                 "showDealButton": False,
-                "totalPrice": total_price
+                "totalPrice": total_price,
+                "negotiationId": negotiation_id,  
+                "pricePerKg": negotiated_price_per_kg,
+                "quantity": negotiated_quantity
             })
 
         return jsonify({"reply": ai_response.content, "showDealButton": False})
@@ -129,6 +135,7 @@ def negotiate():
         print("Error occurred:", str(e))
         print("Stack trace:", traceback.format_exc())
         return jsonify({"error": str(e)}), 500
-
+    
+    
 if __name__ == '__main__':
     app.run(debug=True) 
