@@ -23,7 +23,7 @@ const App = () => {
       {/* <LanguageSelector setLanguage={setLanguage} /> */}
       <ToastContainer position="top-right" autoClose={3000} />
       <DigiKissanNavbar setIsLogin={setIsLogin} />
-      {/* <ChatBot /> */}
+      <ChatBot />
       <Routes>
         <Route path='/' element={<Dashboard />} />
         <Route path='/login' element={<Login setIsLogin={setIsLogin} />} />

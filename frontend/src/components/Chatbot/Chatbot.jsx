@@ -112,13 +112,15 @@ const ChatBot = () => {
 
         // Add welcome message if opening for first time and no messages
         if (!isOpen && messages.length === 0) {
-            const welcomeMessage = {
-                text: "Namaste! I'm your assistant for farmer schemes. How can I help you today? You can ask me about PM-KISAN, crop insurance, subsidies, or any other government schemes for farmers.",
-                sender: 'bot'
+            const languageOptions = {
+                text: "Namaste! कृपया अपनी पसंदीदा भाषा चुनें:\n1. English\n2. हिंदी\n3. मराठी",
+                sender: 'bot',
+                options: ['English', 'हिंदी', 'मराठी']
             };
-            setMessages([welcomeMessage]);
-            speakText(welcomeMessage.text);
+            setMessages([languageOptions]);
+            speakText(languageOptions.text);
         }
+
     };
 
     // Stop speaking
@@ -175,8 +177,8 @@ const ChatBot = () => {
                             className={`mb-3 max-w-3/4 ${msg.sender === 'user' ? 'ml-auto' : 'mr-auto'}`}
                         >
                             <div className={`p-3 rounded-lg ${msg.sender === 'user'
-                                    ? 'bg-green-600 text-white rounded-br-none'
-                                    : 'bg-white border border-gray-200 text-gray-800 rounded-bl-none shadow-sm'
+                                ? 'bg-green-600 text-white rounded-br-none'
+                                : 'bg-white border border-gray-200 text-gray-800 rounded-bl-none shadow-sm'
                                 }`}>
                                 {msg.text}
                             </div>
@@ -209,8 +211,8 @@ const ChatBot = () => {
                         type="submit"
                         disabled={isLoading || !inputMessage.trim()}
                         className={`bg-green-600 text-white px-4 py-2 rounded-r-full font-medium ${isLoading || !inputMessage.trim()
-                                ? 'opacity-50 cursor-not-allowed'
-                                : 'hover:bg-green-700'
+                            ? 'opacity-50 cursor-not-allowed'
+                            : 'hover:bg-green-700'
                             }`}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
