@@ -124,7 +124,10 @@ app.post('/razorpay/verify',jwtAuth, async (req, res) => {
 
       const updatedNegotiate = await negotiateModel.findByIdAndUpdate(
         id,
-        { $push: { buyer: userId } }, // Add buyer ID
+        { 
+            $push: { buyer: userId },
+            $inc : {availableQuantity: -quantity} // Decrease available quantity
+        }, // Add buyer ID
         { new: true }
     );
 

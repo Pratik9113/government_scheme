@@ -53,6 +53,41 @@ def create_base_prompt(grainType="", basePricePerKg=0, minPricePerKg=0, cropType
     
     return ChatPromptTemplate(messages=messages)
 
+@app.route('/create', methods=['POST'])
+def create_negotiation():
+    try:
+        data = request.json
+        negotiation_id = data.get("negotiationId")
+        user_id = data.get("userId")
+        
+        if not negotiation_id or not user_id:
+            return jsonify({"error": "negotiationId and userId are required"}), 400
+            
+        if negotiation_id in negotiation_sessions:
+            return jsonify({"error": "Negotiation session already exists"}), 409
+            
+        negotiation_sessions[negotiation_id] = {
+            "userId": user_id,
+            "grainType": data.get("grainType"),
+            "basePricePerKg": data.get("pricePerKg"),
+            "minPricePerKg": int(data.get("pricePerKg") * 0.94),
+            "quantity": data.get("quantity"),
+            "cropType": data.get("cropType"),
+            "description": data.get("description"),
+            "negotiatedPricePerKg": None,
+            "negotiatedQuantity": None,
+        }
+        
+        return jsonify({
+            "message": "Negotiation session created successfully",
+            "negotiationId": negotiation_id,
+            "status": "created"
+        }), 201
+        
+    except Exception as e:
+        print("Error occurred:", str(e))
+        print("Stack trace:", traceback.format_exc())
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/negotiate', methods=['POST'])
 def negotiate():
