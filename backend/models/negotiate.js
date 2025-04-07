@@ -18,4 +18,3 @@ const negotiateSchema = new mongoose.Schema({
 
 const negotiateModel = mongoose.models.Negotiate || mongoose.model('Negotiate', negotiateSchema);
 export default negotiateModel;
-

@@ -18,15 +18,143 @@ function Dashboard() {
     const [top5Buyers, setTop5Buyers] = useState([]);
     const [recentSales, setRecentSales] = useState([]);
     const [monthlyProfit, setMonthlyProfit] = useState(0);
-
+    const [yearWisePrediction, setYearWisePrediction] = useState([]);
 
 
     const [salesData, setSalesData] = useState({
         labels: [],
         datasets: [],
     });
+
     useEffect(() => {
-        const fetchBuyers = async () => {
+        const getResponse = async () => {
+            try {
+                const response = await axios.get("http://127.0.0.1:5000/predict");
+                console.log("predicted price", response.data.predicted_profits);
+                setYearWisePrediction(response.data.predicted_profits);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+        getResponse();
+    }, []);
+    // useEffect(() => {
+    //     const fetchBuyers = async () => {
+    //         try {
+    //             const response = await axios.get(`${import.meta.env.VITE_BACKEND}/buyers/get`, {
+    //                 withCredentials: true
+    //             });
+
+    //             const buyerData = response.data.data;
+    //             setBuyers(buyerData);
+
+    //             const sortedBuyers = buyerData
+    //                 .filter(entry => entry.buyer && entry.negotiation)
+    //                 .sort((a, b) => b.totalAmount - a.totalAmount)
+    //                 .slice(0, 5)
+    //                 .map(entry => ({
+    //                     grainType: entry.negotiation?.grainType ?? "Unknown",
+    //                     buyerName: entry.buyer?.name ?? "N/A",
+    //                     buyerEmail: entry.buyer?.email ?? "N/A",
+    //                     quantity: entry.quantity,
+    //                     pricePerKg: entry.pricePerKg,
+    //                     totalAmount: entry.totalAmount,
+    //                     status: entry.status
+    //                 }));
+
+    //             setTop5Buyers(sortedBuyers);
+
+
+    //             const sortedRecentSales = buyerData
+    //                 .filter(entry => entry.buyer && entry.negotiation)
+    //                 .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // latest first
+    //                 .slice(0, 5)
+    //                 .map(entry => ({
+    //                     name: entry.negotiation?.grainType ?? "Unknown",
+    //                     status: entry.status ?? "Pending",
+    //                     price: entry.totalAmount ?? 0,
+    //                     items: entry.quantity ?? 0
+    //                 }));
+
+    //             setRecentSales(sortedRecentSales);
+
+    //             // Group sales by month
+    //             const monthlySales = {};
+
+    //             // assuming entry.createdAt is ISO format
+    //             buyerData.forEach(entry => {
+    //                 if (entry.createdAt && entry.totalAmount) {
+    //                     const date = new Date(entry.createdAt);
+    //                     const monthYear = date.toLocaleString('default', { month: 'short', year: '2-digit' }); // e.g., "Apr '25"
+
+    //                     if (!monthlySales[monthYear]) {
+    //                         monthlySales[monthYear] = 0;
+    //                     }
+    //                     monthlySales[monthYear] += entry.totalAmount;
+    //                 }
+    //             });
+
+    //             // Convert to labels and data arrays
+    //             const labels = Object.keys(monthlySales).sort((a, b) => {
+    //                 const [aMonth, aYear] = a.split(" ");
+    //                 const [bMonth, bYear] = b.split(" ");
+    //                 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    //                 return new Date(`20${aYear}`, months.indexOf(aMonth)) - new Date(`20${bYear}`, months.indexOf(bMonth));
+    //             });
+
+    //             const data = labels.map(label => monthlySales[label]);
+
+    //             // Update chart data
+    //             setSalesData({
+    //                 labels,
+    //                 datasets: [
+    //                     {
+    //                         label: 'Profit (₹)',
+    //                         data,
+    //                         fill: false,
+    //                         borderColor: theme === 'dark' ? '#fff' : '#4F46E5',
+    //                         backgroundColor: theme === 'dark' ? 'rgba(5, 39, 237, 0.7)' : 'rgba(79, 70, 229, 0.2)',
+    //                         tension: 0.4,
+    //                     },
+    //                 ],
+    //             });
+    //             console.log(salesData)
+
+
+
+    //             // Get current month and year
+    //             const now = new Date();
+    //             const currentMonth = now.getMonth(); // 0-indexed
+    //             const currentYear = now.getFullYear();
+
+    //             // Filter and calculate this month's profit
+    //             const thisMonthSales = buyerData.filter(entry => {
+    //                 const saleDate = new Date(entry.updatedAt || entry.createdAt);
+    //                 return (
+    //                     saleDate.getMonth() === currentMonth &&
+    //                     saleDate.getFullYear() === currentYear
+    //                 );
+    //             });
+
+    //             const totalProfit = thisMonthSales.reduce(
+    //                 (acc, sale) => acc + (sale.totalAmount || 0),
+    //                 0
+    //             );
+
+    //             setMonthlyProfit(totalProfit);
+    //             await axios.post("http://127.0.0.1:5000/update-csv", {
+    //                 profit: totalProfit
+    //             });
+    //         } catch (error) {
+    //             console.error("Error fetching buyers:", error);
+    //         }
+    //     };
+
+    //     fetchBuyers();
+    // }, []);
+
+    useEffect(() => {
+        (async () => {
             try {
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND}/buyers/get`, {
                     withCredentials: true
@@ -51,10 +179,9 @@ function Dashboard() {
 
                 setTop5Buyers(sortedBuyers);
 
-
                 const sortedRecentSales = buyerData
                     .filter(entry => entry.buyer && entry.negotiation)
-                    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // latest first
+                    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                     .slice(0, 5)
                     .map(entry => ({
                         name: entry.negotiation?.grainType ?? "Unknown",
@@ -65,15 +192,12 @@ function Dashboard() {
 
                 setRecentSales(sortedRecentSales);
 
-                // Group sales by month
                 const monthlySales = {};
 
-                // assuming entry.createdAt is ISO format
                 buyerData.forEach(entry => {
                     if (entry.createdAt && entry.totalAmount) {
                         const date = new Date(entry.createdAt);
-                        const monthYear = date.toLocaleString('default', { month: 'short', year: '2-digit' }); // e.g., "Apr '25"
-
+                        const monthYear = date.toLocaleString('default', { month: 'short', year: '2-digit' });
                         if (!monthlySales[monthYear]) {
                             monthlySales[monthYear] = 0;
                         }
@@ -81,7 +205,6 @@ function Dashboard() {
                     }
                 });
 
-                // Convert to labels and data arrays
                 const labels = Object.keys(monthlySales).sort((a, b) => {
                     const [aMonth, aYear] = a.split(" ");
                     const [bMonth, bYear] = b.split(" ");
@@ -91,7 +214,6 @@ function Dashboard() {
 
                 const data = labels.map(label => monthlySales[label]);
 
-                // Update chart data
                 setSalesData({
                     labels,
                     datasets: [
@@ -105,16 +227,11 @@ function Dashboard() {
                         },
                     ],
                 });
-                console.log(salesData)
 
-
-
-                // Get current month and year
                 const now = new Date();
-                const currentMonth = now.getMonth(); // 0-indexed
+                const currentMonth = now.getMonth();
                 const currentYear = now.getFullYear();
 
-                // Filter and calculate this month's profit
                 const thisMonthSales = buyerData.filter(entry => {
                     const saleDate = new Date(entry.updatedAt || entry.createdAt);
                     return (
@@ -129,12 +246,15 @@ function Dashboard() {
                 );
 
                 setMonthlyProfit(totalProfit);
+
+                await axios.post("http://127.0.0.1:5000/update-csv", {
+                    profit: totalProfit
+                });
+
             } catch (error) {
                 console.error("Error fetching buyers:", error);
             }
-        };
-
-        fetchBuyers();
+        })();
     }, []);
 
 
@@ -191,12 +311,14 @@ function Dashboard() {
 
     // Bar Chart for Profit Trend
     const profitData = {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        labels: ['May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct'],
         datasets: [
             {
-                label: 'Profit ($)',
-                data: [5000, 7000, 3000, 8000, 10000, 12000],
-                backgroundColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.7)' : multiColors,
+                label: 'Profit (₹)',
+                data: yearWisePrediction.length ? yearWisePrediction : [0, 0, 0, 0, 0, 0],
+                backgroundColor: theme === 'dark'
+                    ? 'rgba(255, 255, 255, 0.7)'
+                    : ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'],
             },
         ],
     };

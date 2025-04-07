@@ -19,7 +19,12 @@ from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import LSTM, Dense
 from sklearn.preprocessing import MinMaxScaler
 from datetime import datetime
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import accuracy_score
 import csv
+
 
 app = Flask(__name__)
 CORS(app)  
@@ -238,12 +243,10 @@ def predict():
 
 
 CSV_FILE = '10yr_monthly_profit_data.csv'
-
 @app.route('/update-csv', methods=['POST'])
 def update_csv():
     data = request.get_json()
     profit = data.get('profit')
-    
 
     if profit is None:
         return jsonify({"error": "Profit not provided"}), 400
@@ -251,27 +254,100 @@ def update_csv():
     now = datetime.now()
     current_month = now.strftime('%b-%Y')  # e.g., Apr-2025
 
+    # Ensure CSV file exists with headers
     existing_rows = []
+    headers = ['Month', 'Profit (₹)']
     if os.path.exists(CSV_FILE):
         with open(CSV_FILE, mode='r') as file:
             reader = csv.reader(file)
             existing_rows = list(reader)
 
-    updated = False
-    for i, row in enumerate(existing_rows):
-        if row and row[0] == current_month:
-            existing_rows[i][1] = str(profit)  # Update existing month's profit
-            updated = True
-            break
+        # Check for and remove duplicate header
+        if existing_rows and existing_rows[0] == headers:
+            existing_rows = existing_rows[1:]
 
-    if not updated:
-        existing_rows.append([current_month, profit])  # Add new month
+        # Remove all previous entries for the current month
+        existing_rows = [row for row in existing_rows if row and row[0] != current_month]
 
+    # Append the correct entry for the current month
+    existing_rows.append([current_month, profit])
+
+    # Write updated data back with headers
     with open(CSV_FILE, mode='w', newline='') as file:
         writer = csv.writer(file)
+        writer.writerow(headers)
         writer.writerows(existing_rows)
 
-    return jsonify({"message": f"CSV updated for {current_month} with profit {profit}"}), 200
+    return jsonify({"message": f"✅ CSV updated for {current_month} with profit {profit}"}), 200
+
+
+
+
+
+
+## crop prediction 
+
+# Global variables to reuse across functions
+model = None
+le = None
+
+def train_crop_model():
+    global model, le
+    # Load dataset
+    df = pd.read_csv("Crop_recommendation.csv")
+
+    # Split features and target
+    X = df.drop("label", axis=1)
+    y = df["label"]
+
+    # Encode labels
+    le = LabelEncoder()
+    y_encoded = le.fit_transform(y)
+
+    # Train-test split
+    X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, test_size=0.2, random_state=42)
+
+    # Train Random Forest model
+    model = RandomForestClassifier()
+    model.fit(X_train, y_train)
+
+    # Accuracy logging
+    y_pred = model.predict(X_test)
+    accuracy = accuracy_score(y_test, y_pred)
+    print(f"✅ Model trained. Accuracy: {accuracy:.2f}")
+    return model, le
+
+def predict_crop_from_input(input_data):
+    """
+    input_data: dict with keys N, P, K, temperature, humidity, ph, rainfall
+    """
+    global model, le
+    if model is None or le is None:
+        train_crop_model()
+
+    # Convert input dict to feature array
+    feature_array = np.array([[input_data["N"], input_data["P"], input_data["K"],
+                               input_data["temperature"], input_data["humidity"],
+                               input_data["ph"], input_data["rainfall"]]])
+    
+    prediction = model.predict(feature_array)
+    predicted_crop = le.inverse_transform(prediction)[0]
+    return predicted_crop
+
+
+@app.route('/predict-crop', methods=['POST'])
+def predict_crop():
+    try:
+        data = request.get_json()
+        predicted_crop = predict_crop_from_input(data)
+        return jsonify({
+            "message": "🌾 Crop Recommendation",
+            "suggested_crop": predicted_crop
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 
 
 
