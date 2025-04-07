@@ -1,104 +1,48 @@
-
-
 import React from 'react';
-import { Home, Building, Briefcase, GraduationCap, Heart, Building2, Scale, Atom, BarChart2, HandMetal } from 'lucide-react';
 
-const DashboardScheme = () => {
-    const schemes = [
-        {
-            icon: <Building className="w-8 h-8 text-olive-600" />,
-            count: 417,
-            title: "Agriculture, Rural & Environment",
-            color: "bg-olive-50"
-        },
-        {
-            icon: <Building2 className="w-8 h-8 text-orange-600" />,
-            count: 215,
-            title: "Banking, Financial Services and Insurance",
-            color: "bg-orange-50"
-        },
-        {
-            icon: <Briefcase className="w-8 h-8 text-blue-600" />,
-            count: 461,
-            title: "Business & Entrepreneurship",
-            color: "bg-blue-50"
-        },
-        {
-            icon: <GraduationCap className="w-8 h-8 text-red-600" />,
-            count: 769,
-            title: "Education & Learning",
-            color: "bg-red-50"
-        },
-        {
-            icon: <Heart className="w-8 h-8 text-teal-600" />,
-            count: 214,
-            title: "Health & Wellness",
-            color: "bg-teal-50"
-        },
-        {
-            icon: <Home className="w-8 h-8 text-blue-800" />,
-            count: 93,
-            title: "Housing & Shelter",
-            color: "bg-blue-50"
-        },
-        {
-            icon: <Scale className="w-8 h-8 text-red-800" />,
-            count: 10,
-            title: "Public Safety, Law & Justice",
-            color: "bg-red-50"
-        },
-        {
-            icon: <Atom className="w-8 h-8 text-teal-800" />,
-            count: 61,
-            title: "Science, IT & Communications",
-            color: "bg-teal-50"
-        },
-        {
-            icon: <BarChart2 className="w-8 h-8 text-yellow-800" />,
-            count: 253,
-            title: "Skills & Employment",
-            color: "bg-yellow-50"
-        },
-        {
-            icon: <HandMetal className="w-8 h-8 text-red-600" />,
-            count: 1238,
-            title: "Social welfare & Empowerment",
-            color: "bg-red-50"
-        }
-    ];
-
+const MySchemeAbout = () => {
     return (
-        <div className="container mx-auto px-4 py-8">
-            <div className="mb-8">
-                <nav className="flex justify-center space-x-8 text-sm font-medium">
-                    <button className="px-4 py-2 bg-green-100 text-green-800 rounded-md">Categories</button>
-                    <button className="px-4 py-2 hover:bg-gray-100 rounded-md">States/UTs</button>
-                    <button className="px-4 py-2 hover:bg-gray-100 rounded-md">Central Ministries</button>
-                </nav>
-            </div>
+        <div className="bg-white py-12 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
+            <div className="flex flex-col lg:flex-row gap-8 items-center">
+                <div className="w-full lg:w-1/2">
+                    <h2 className="text-4xl font-bold text-green-600 mb-6">About</h2>
 
-            <h1 className="text-3xl font-bold text-center mb-12">Find schemes based on categories</h1>
+                    <p className="text-gray-700 mb-4 text-lg">
+                        myScheme is a National Platform that aims to offer one-stop search
+                        and discovery of the Government schemes.
+                    </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-                {schemes.map((scheme, index) => (
-                    <div
-                        key={index}
-                        className={`${scheme.color} rounded-lg p-6 flex flex-col items-center text-center hover:shadow-lg transition-shadow cursor-pointer`}
-                    >
-                        <div className="mb-4">
-                            {scheme.icon}
-                        </div>
-                        <div className="text-lg font-semibold text-green-700 mb-2">
-                            {scheme.count} Schemes
-                        </div>
-                        <h3 className="text-gray-800 font-medium">
-                            {scheme.title}
-                        </h3>
+                    <p className="text-gray-700 mb-4 text-lg">
+                        It provides an innovative, technology-based solution to discover
+                        scheme information based upon the eligibility of the citizen.
+                    </p>
+
+                    <p className="text-gray-700 mb-6 text-lg">
+                        The platform helps the citizen to find the right Government schemes
+                        for them. It also guides on how to apply for different Government
+                        schemes. Thus no need to visit multiple Government websites.
+                    </p>
+
+                    <button className="inline-flex items-center px-6 py-3 border border-green-600 text-green-600 font-medium rounded hover:bg-green-50 transition-colors">
+                        View More
+                        <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <div className="w-full lg:w-1/2 relative">
+                    <div className="rounded-lg overflow-hidden shadow-lg border-8 border-white">
+                        <img
+                            src="/api/placeholder/800/500"
+                            alt="Farmer using myScheme app in field"
+                            className="w-full h-full object-cover"
+                        />
                     </div>
-                ))}
+                </div>
             </div>
         </div>
     );
 };
 
-export default DashboardScheme;
+export default MySchemeAbout;

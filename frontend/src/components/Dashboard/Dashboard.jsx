@@ -1,10 +1,16 @@
 import React from 'react'
-import DashboardScheme from './DashboardScheme'
+import GovernmentSchemesSlider from './SideScroll';
+import AgriTechSteps from './StepWise';
+import DigiKissanFooter from './DashboardFooter';
+import MySchemeAbout from './DashboardScheme';
 
 const Dashboard = () => {
     return (
         <>
-            <DashboardScheme />
+            <GovernmentSchemesSlider />
+            <MySchemeAbout />
+            <AgriTechSteps />
+            <DigiKissanFooter />
         </>
     )
 }
