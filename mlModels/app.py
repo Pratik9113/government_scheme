@@ -20,6 +20,10 @@ from tensorflow.keras.layers import LSTM, Dense
 from sklearn.preprocessing import MinMaxScaler
 from datetime import datetime
 import csv
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import accuracy_score
 
 app = Flask(__name__)
 CORS(app)  
@@ -272,6 +276,76 @@ def update_csv():
         writer.writerows(existing_rows)
 
     return jsonify({"message": f"CSV updated for {current_month} with profit {profit}"}), 200
+
+
+
+
+
+# Global variables to reuse across functions
+model = None
+le = None
+
+def train_crop_model():
+    global model, le
+    # Load dataset
+    df = pd.read_csv("Crop_recommendation.csv")
+
+    # Split features and target
+    X = df.drop("label", axis=1)
+    y = df["label"]
+
+    # Encode labels
+    le = LabelEncoder()
+    y_encoded = le.fit_transform(y)
+
+    # Train-test split
+    X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, test_size=0.2, random_state=42)
+
+    # Train Random Forest model
+    model = RandomForestClassifier()
+    model.fit(X_train, y_train)
+
+    # Accuracy logging
+    y_pred = model.predict(X_test)
+    accuracy = accuracy_score(y_test, y_pred)
+    print(f"✅ Model trained. Accuracy: {accuracy:.2f}")
+    return model, le
+
+def predict_crop_from_input(input_data):
+    """
+    input_data: dict with keys N, P, K, temperature, humidity, ph, rainfall
+    """
+    global model, le
+    if model is None or le is None:
+        train_crop_model()
+
+    # Convert input dict to feature array
+    feature_array = np.array([[input_data["N"], input_data["P"], input_data["K"],
+                               input_data["temperature"], input_data["humidity"],
+                               input_data["ph"], input_data["rainfall"]]])
+    
+    prediction = model.predict(feature_array)
+    predicted_crop = le.inverse_transform(prediction)[0]
+    return predicted_crop
+
+
+@app.route('/predict-crop', methods=['POST'])
+def predict_crop():
+    try:
+        data = request.get_json()
+        predicted_crop = predict_crop_from_input(data)
+        return jsonify({
+            "message": "🌾 Crop Recommendation",
+            "suggested_crop": predicted_crop
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+
+
+
+
 
 
 
