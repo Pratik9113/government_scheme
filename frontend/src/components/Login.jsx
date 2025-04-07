@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import axios from "axios";
 import { toast } from 'react-toastify';
 import { useNavigate } from "react-router-dom";
-import './Login.css';
 
 const Login = ({ setIsLogin }) => {
     const { t } = useTranslation();
@@ -50,39 +49,38 @@ const Login = ({ setIsLogin }) => {
     };
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md bg-opacity-1 z-1">
-            <div className="login-container">
-                <div className="flex justify-between items-center text-black">
-                    <h2 className="text-xl font-semibold">{currState}</h2>
-                    {t("greeting")}
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 backdrop-blur-sm z-50">
+            <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
+                <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-2xl font-bold text-green-700">
+                        {currState === "SignUp" ? "Sign Up" : "Login"}
+                    </h2>
+                    <span className="text-gray-500">{t("greeting")}</span>
                 </div>
 
-                <form onSubmit={onLogin} className="mt-4 space-y-4">
-                    {/* Show Name Input only in SignUp */}
+                <form onSubmit={onLogin} className="space-y-4">
                     {currState === "SignUp" && (
-                        <input
-                            type="text"
-                            name="name"
-                            placeholder="Enter your name"
-                            value={data.name}
-                            onChange={onChangeHandler}
-                            required
-                            className="w-full p-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
-                        />
-                    )}
-
-                    {/* Show User Type Selection only in SignUp */}
-                    {currState === "SignUp" && (
-                        <select
-                            name="userType"
-                            value={data.userType}
-                            onChange={onChangeHandler}
-                            required
-                            className="w-full p-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
-                        >
-                            <option value="Farmer">Farmer</option>
-                            <option value="Vendor">Vendor</option>
-                        </select>
+                        <>
+                            <input
+                                type="text"
+                                name="name"
+                                placeholder="Enter your name"
+                                value={data.name}
+                                onChange={onChangeHandler}
+                                required
+                                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                            />
+                            <select
+                                name="userType"
+                                value={data.userType}
+                                onChange={onChangeHandler}
+                                required
+                                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                            >
+                                <option value="Farmer">Farmer</option>
+                                <option value="Vendor">Vendor</option>
+                            </select>
+                        </>
                     )}
 
                     <input
@@ -92,7 +90,7 @@ const Login = ({ setIsLogin }) => {
                         value={data.email}
                         onChange={onChangeHandler}
                         required
-                        className="w-full p-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                     />
 
                     <input
@@ -102,27 +100,29 @@ const Login = ({ setIsLogin }) => {
                         value={data.password}
                         onChange={onChangeHandler}
                         required
-                        className="w-full p-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                     />
 
-                    <button type="submit" className="login-button">
+                    <button
+                        type="submit"
+                        className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition-all duration-200"
+                    >
                         {currState === "SignUp" ? "Create an Account" : "Login"}
                     </button>
                 </form>
 
-                <div className="text-center mt-3 text-black">
-                    <p>
-                        {currState === "Login" ? "Create an account" : "Already have an account?"}
-                        <span
-                            className="text-green-600 font-semibold cursor-pointer ml-1"
-                            onClick={() => setCurrState(currState === "Login" ? "SignUp" : "Login")}
-                        >
-                            {currState === "Login" ? "Click here" : "Login here"}
-                        </span>
-                    </p>
+                <div className="text-center mt-4 text-sm text-gray-600">
+                    {currState === "Login" ? "Don't have an account?" : "Already have an account?"}
+                    <span
+                        className="text-green-600 font-medium cursor-pointer ml-1 hover:underline"
+                        onClick={() => setCurrState(currState === "Login" ? "SignUp" : "Login")}
+                    >
+                        {currState === "Login" ? "Sign Up" : "Login"}
+                    </span>
                 </div>
             </div>
         </div>
+
     );
 };
 

@@ -95,13 +95,22 @@ const FarmerProductInterface = () => {
     );
 };
 
+
 const ProductManagement = () => {
     const [products, setProducts] = useState([]);
+    const [editingProduct, setEditingProduct] = useState(null);
+    const [editDetails, setEditDetails] = useState({
+        grainType: '',
+        cropType: '',
+        pricePerKg: '',
+        availableQuantity: '',
+        description: ''
+    });
 
     const fetchProducts = async () => {
         try {
-            const response = await axios.get(`${import.meta.env.VITE_BACKEND}/farmer/products`, { withCredentials: true });
-            setProducts(response.data);
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND}/farmer/get-farmer-crop`, { withCredentials: true });
+            setProducts(response.data.data);
         } catch (error) {
             console.error("Fetch Error:", error);
         }
@@ -109,10 +118,48 @@ const ProductManagement = () => {
 
     const deleteProduct = async (id) => {
         try {
-            await axios.delete(`${import.meta.env.VITE_BACKEND}/farmer/products/${id}`, { withCredentials: true });
+            await axios.delete(`${import.meta.env.VITE_BACKEND}/farmer/delete-product/${id}`, { withCredentials: true });
             setProducts(products.filter(product => product._id !== id));
         } catch (error) {
             console.error("Delete Error:", error);
+        }
+    };
+
+    const handleEditClick = (product) => {
+        setEditingProduct(product._id);
+        setEditDetails({
+            grainType: product.grainType,
+            cropType: product.cropType,
+            pricePerKg: product.pricePerKg,
+            availableQuantity: product.availableQuantity,
+            description: product.description,
+        });
+    };
+
+    const handleEditInputChange = (e) => {
+        const { name, value } = e.target;
+        setEditDetails(prev => ({
+            ...prev,
+            [name]: name === 'pricePerKg' || name === 'availableQuantity' ? Number(value) : value
+        }));
+    };
+
+    const handleUpdateSubmit = async () => {
+        try {
+            const response = await axios.patch(
+                `${import.meta.env.VITE_BACKEND}/farmer/crop-update/${editingProduct}`,
+                editDetails,
+                { withCredentials: true }
+            );
+
+            if (response.data.success) {
+                alert("Product Updated Successfully");
+                setEditingProduct(null);
+                fetchProducts(); // Refresh list
+            }
+        } catch (error) {
+            console.error("Update Error:", error);
+            alert("Failed to update product.");
         }
     };
 
@@ -123,13 +170,33 @@ const ProductManagement = () => {
             <h2 className="text-2xl font-bold text-green-800 mb-4">Manage Your Products</h2>
             <div className="space-y-4">
                 {products.map(product => (
-                    <div key={product._id} className="p-4 border rounded-lg flex justify-between items-center">
-                        <div>
-                            <h3 className="text-lg font-semibold">{product.cropType} - {product.grainType}</h3>
-                            <p>Price: ₹{product.pricePerKg}/Kg</p>
-                            <p>Available: {product.availableQuantity} Kg</p>
-                        </div>
-                        <button onClick={() => deleteProduct(product._id)} className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700">Delete</button>
+                    <div key={product._id} className="p-4 border rounded-lg space-y-2">
+                        {editingProduct === product._id ? (
+                            <div className="space-y-2">
+                                <input type="text" name="grainType" value={editDetails.grainType} onChange={handleEditInputChange} className="w-full p-2 border rounded" />
+                                <input type="text" name="cropType" value={editDetails.cropType} onChange={handleEditInputChange} className="w-full p-2 border rounded" />
+                                <input type="number" name="pricePerKg" value={editDetails.pricePerKg} onChange={handleEditInputChange} className="w-full p-2 border rounded" />
+                                <input type="number" name="availableQuantity" value={editDetails.availableQuantity} onChange={handleEditInputChange} className="w-full p-2 border rounded" />
+                                <textarea name="description" value={editDetails.description} onChange={handleEditInputChange} className="w-full p-2 border rounded min-h-[80px]" />
+                                <div className="flex space-x-2">
+                                    <button onClick={handleUpdateSubmit} className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">Update</button>
+                                    <button onClick={() => setEditingProduct(null)} className="bg-gray-400 text-white px-3 py-1 rounded hover:bg-gray-600">Cancel</button>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="flex justify-between items-center">
+                                <div>
+                                    <h3 className="text-lg font-semibold">{product.cropType} - {product.grainType}</h3>
+                                    <p>Price: ₹{product.pricePerKg}/Kg</p>
+                                    <p>Available: {product.availableQuantity} Kg</p>
+                                    <p className="text-sm text-gray-600">{product.description}</p>
+                                </div>
+                                <div className="space-x-2">
+                                    <button onClick={() => handleEditClick(product)} className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">Edit</button>
+                                    <button onClick={() => deleteProduct(product._id)} className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700">Delete</button>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 ))}
             </div>
@@ -137,4 +204,8 @@ const ProductManagement = () => {
     );
 };
 
+
+
 export default FarmerDashboard;
+
+

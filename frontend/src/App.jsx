@@ -20,7 +20,7 @@ const App = () => {
 
   return (
     <Router>
-      {/* <LanguageSelector setLanguage={setLanguage} /> */}
+      <LanguageSelector setLanguage={setLanguage} />
       <ToastContainer position="top-right" autoClose={3000} />
       <DigiKissanNavbar setIsLogin={setIsLogin} />
       <ChatBot />

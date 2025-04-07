@@ -11,6 +11,9 @@ from flask_cors import CORS
 import traceback
 from db_connection import db
 import re 
+from transformers import pipeline
+import requests
+
 
 app = Flask(__name__)
 CORS(app)  
@@ -23,6 +26,145 @@ if not api_key:
 model = ChatGroq(model="gemma2-9b-it", groq_api_key=api_key)
 
 store = {}
+
+
+# Translation Pipelines
+en_hi = pipeline("translation", model="Helsinki-NLP/opus-mt-hi-en")
+hi_en = pipeline("translation", model="Helsinki-NLP/opus-mt-en-hi")
+mr_en = pipeline("translation", model="Helsinki-NLP/opus-mt-mr-en")
+en_mr = pipeline("translation", model="Helsinki-NLP/opus-mt-en-mr")
+
+GROQ_API_KEY = os.getenv("digikissan")
+GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
+def ask_groq(prompt, model="llama3-8b-8192"):
+    import requests
+
+    headers = {
+        "Authorization": f"Bearer {GROQ_API_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    payload = {
+        "model": model,
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": 0.7
+    }
+
+    try:
+        res = requests.post(GROQ_URL, headers=headers, json=payload)
+        res.raise_for_status()  # Raises HTTPError for bad responses (4xx/5xx)
+        data = res.json()
+
+        print("[DEBUG] Groq raw response:", data)  # Optional: log for debugging
+
+        # Check if 'choices' exists and has content
+        if "choices" in data and len(data["choices"]) > 0:
+            return data["choices"][0]["message"]["content"]
+        else:
+            raise ValueError("No 'choices' found in Groq API response")
+
+    except requests.exceptions.RequestException as e:
+        print("[ERROR] Request failed:", e)
+        return "Sorry, something went wrong while contacting the AI service."
+
+    except Exception as e:
+        print("[ERROR] Unexpected error:", e)
+        return "Sorry, I couldn't process your request at the moment."
+
+
+# @app.route('/chat', methods=['POST'])
+# def chat():
+#     data = request.json
+#     message = data.get("message", "")
+#     lang = data.get("lang", "en")  # 'en', 'hi', 'mr'
+
+#     # Translate user input to English
+#     if lang == "hi":
+#         msg_en = en_hi(message)[0]["translation_text"]
+#     elif lang == "mr":
+#         msg_en = mr_en(message)[0]["translation_text"]
+#     else:
+#         msg_en = message
+
+#     # Ask Groq
+#     answer_en = ask_groq(f"Answer the following agricultural question in simple terms for farmers: {msg_en}")
+
+#     # Translate back to original language
+#     if lang == "hi":
+#         answer = hi_en(answer_en)[0]["translation_text"]
+#     elif lang == "mr":
+#         answer = en_mr(answer_en)[0]["translation_text"]
+#     else:
+#         answer = answer_en
+
+#     return jsonify({"reply": answer})
+
+
+
+schemes_collection = db["schemes"]
+
+@app.route('/chat', methods=['POST'])
+def chat():
+    try:
+        data = request.json
+        message = data.get("message", "")
+        lang = data.get("lang", "en")
+
+        # Step 1: Translate message to English if needed
+        if lang == "hi":
+            msg_en = en_hi(message)[0]["translation_text"]
+        elif lang == "mr":
+            msg_en = mr_en(message)[0]["translation_text"]
+        else:
+            msg_en = message
+
+        # Step 2: Fetch all schemes from MongoDB
+        schemes = list(schemes_collection.find().limit(5))
+        print(f"[DEBUG] Retrieved {len(schemes)} schemes from DB")
+
+        # Step 3: Build context with safe access to fields
+        context_parts = []
+        for s in schemes:
+            context_parts.append(
+                f"Title: {s.get('title', 'N/A')}\n"
+                f"Description: {s.get('description', 'N/A')}\n"
+                f"Steps: {s.get('steps', 'N/A')}\n"
+                f"Link: {s.get('link', 'N/A')}\n"
+            )
+
+        context_text = "\n---\n".join(context_parts)
+
+        # Step 4: Create prompt for Groq
+        full_prompt = f"""
+You are an agricultural expert helping Indian farmers.
+
+Use the following list of government schemes to answer the user's question in a simple and helpful way.
+
+Schemes:
+{context_text}
+
+Question: {msg_en}
+Answer:
+"""
+
+        # Step 5: Ask Groq for answer
+        answer_en = ask_groq(full_prompt)
+
+        # Step 6: Translate response back to user's language
+        if lang == "hi":
+            answer = hi_en(answer_en)[0]["translation_text"]
+        elif lang == "mr":
+            answer = en_mr(answer_en)[0]["translation_text"]
+        else:
+            answer = answer_en
+
+        return jsonify({"reply": answer})
+
+    except Exception as e:
+        print(traceback.format_exc())
+        return jsonify({"error": str(e)}), 500
+
+
 
 def get_session_history(session_id: str) -> BaseChatMessageHistory:
     if session_id not in store:
