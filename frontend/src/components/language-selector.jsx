@@ -29,7 +29,7 @@ const LanguageSelector = ({ setLanguage }) => {
     };
 
     return (
-        <div className="fixed bottom-4 right-4">
+        <div className="fixed bottom-20 right-8">
             <button
                 className="p-3 rounded-full shadow-lg bg-blue-500 text-white hover:bg-blue-600"
                 onClick={() => setIsOpen(!isOpen)}

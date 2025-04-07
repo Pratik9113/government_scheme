@@ -244,6 +244,46 @@ const SchemesDashboard = ({ language }) => {
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full p-2 border rounded"
                 />
+
+                {/* Age Filter */}
+                <input
+                    type="number"
+                    name="age"
+                    placeholder="Enter Age"
+                    onChange={handleFilterChange}
+                    className="w-full p-2 mb-3 border rounded"
+                />
+
+                {/* Caste Filter */}
+                <select name="caste" onChange={handleFilterChange} className="w-full p-2 mb-3 border rounded">
+                    <option value="">Select Caste</option>
+                    <option value="General">General</option>
+                    <option value="OBC">OBC</option>
+                    <option value="SC">SC</option>
+                    <option value="ST">ST</option>
+                    <option value="EWS">EWS</option>
+                </select>
+
+                {/* Ministry Filter */}
+                <select name="ministry" onChange={handleFilterChange} className="w-full p-2 mb-3 border rounded">
+                    <option value="">Select Ministry</option>
+                    <option value="Health">Health</option>
+                    <option value="Education">Education</option>
+                    <option value="Women and Child Development">Women and Child Development</option>
+                    <option value="Social Justice">Social Justice</option>
+                    <option value="Agriculture">Agriculture</option>
+                </select>
+
+                {/* Benefit Type Filter */}
+                <select name="benefitType" onChange={handleFilterChange} className="w-full p-2 mb-3 border rounded">
+                    <option value="">Select Benefit Type</option>
+                    <option value="Subsidy">Subsidy</option>
+                    <option value="Loan">Loan</option>
+                    <option value="Scholarship">Scholarship</option>
+                    <option value="Grant">Grant</option>
+                    <option value="Insurance">Insurance</option>
+                </select>
+
             </div>
 
             {/* Main Content */}

@@ -16,6 +16,6 @@ const negotiateSchema = new mongoose.Schema({
     }]
 }, { timestamps: true });
 
-const negotiateModel = mongoose.models.test_schemes || mongoose.model('test_schemes', negotiateSchema);
+const negotiateModel = mongoose.models.Negotiate || mongoose.model('Negotiate', negotiateSchema);
 export default negotiateModel;
 
