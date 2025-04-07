@@ -11,6 +11,7 @@ from flask_cors import CORS
 import traceback
 from db_connection import db
 import re 
+from model import train_model, predict_future
 
 app = Flask(__name__)
 CORS(app)  
@@ -52,6 +53,18 @@ def create_base_prompt(grainType="", basePricePerKg=0, minPricePerKg=0, cropType
     ]
     
     return ChatPromptTemplate(messages=messages)
+
+
+@app.route('/train', methods=['GET'])
+def train():
+    train_model()
+    return jsonify({"message": "Model trained successfully."})
+
+@app.route('/predict', methods=['GET'])
+def predict():
+    prediction = predict_future()
+    return jsonify({"next_6_months_profit": prediction})
+
 
 @app.route('/create', methods=['POST'])
 def create_negotiation():

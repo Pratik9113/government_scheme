@@ -9,3 +9,10 @@ Flask-PyMongo
 PyMongo
 googletrans
 deep_translator
+
+
+numpy
+scikit-learn
+tensorflow
+keras
+joblib

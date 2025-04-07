@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+
+
+
 import {
     ChevronRight,
     ArrowUpRight,
@@ -12,7 +15,7 @@ import axios from 'axios';
 function Dashboard() {
     const [theme, setTheme] = useState('dark');
     const [fullAmount, setFullAmount] = useState(0);
-
+    const [predictedData, setPredictedData] = useState([]);
 
     const [buyers, setBuyers] = useState([]);
     const [top5Buyers, setTop5Buyers] = useState([]);
@@ -25,6 +28,16 @@ function Dashboard() {
         labels: [],
         datasets: [],
     });
+    useEffect(() => {
+        axios.get('http://127.0.0.1:5000/predict')  // change URL if different
+          .then(res => {
+            setPredictedData(res.data);  // assuming res.data is an array of { month: 'May', profit: 1234 }
+          })
+          .catch(err => {
+            console.error('Error fetching predicted data:', err);
+          });
+      }, []);
+      
     useEffect(() => {
         const fetchBuyers = async () => {
             try {
@@ -476,7 +489,7 @@ function Dashboard() {
                     </div>
                     <div className={`p-6 rounded-lg border ${borderClass} shadow-md transition-all duration-300 transform hover:scale-105 ${bgClass}`}>
                         <h2 className={`text-lg font-semibold mb-4 ${textClass}`}>Profit Trend</h2>
-                        <Bar data={profitData} options={profitOptions} />
+                        <Bar data={predictedData} options={predictedData} />
                     </div>
                 </div>
             </main>
