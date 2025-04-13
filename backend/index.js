@@ -10,8 +10,7 @@ import bodyParser from "body-parser";
 import pkg from 'twilio';
 const { twiml } = pkg;
 import cookieParser from "cookie-parser";
-import EventRouter from "./routes/eventRoute.js";
-import EventModel from "./models/EventSchema.js";
+
 import axios from "axios";
 import { createServer } from "http";
 import { Server } from "socket.io";
@@ -53,12 +52,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 
-console.log(process.env.RAZORPAY_KEY_SECRET)
-console.log(process.env.RAZORPAY_KEY_ID)
-
-
 app.use("/user", LoginRouter);
-app.use("/event", EventRouter);
 app.use("/farmer", NegotiateRouter);
 app.use("/scheme", schemeRouter);
 app.use("/api/farmer-assistant/chat", farmerChat);
@@ -176,7 +170,7 @@ connectDB();
 
 
 // Start the server and listen on the correct port
-const port = process.env.PORT || 3003;
+const port = process.env.PORT || 5001;
 server.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });

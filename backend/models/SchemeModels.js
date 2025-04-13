@@ -9,5 +9,5 @@ const SchemeSchema = new mongoose.Schema({
     embeddings:{type:[Number]},
   });
   
-const SchemaModel = mongoose.models.schemes || mongoose.model("test_schemes", SchemeSchema);
+const SchemaModel = mongoose.models.schemes || mongoose.model("schemes", SchemeSchema);
 export default SchemaModel;
