@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import rural_image from "../../assets/rural_image.png";
+import image1 from "../../assets/image1.png";
+import image from "../../assets/image.png";
+
+
 
 const GovernmentSchemesSlider = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
@@ -7,19 +12,20 @@ const GovernmentSchemesSlider = () => {
     const slides = [
         {
             title: "Discover government schemes for you...",
-            subtitle: "Find Personalised Schemes Based of Eligibility",
-            image: "/api/placeholder/600/400" // Single image placeholder
+            subtitle: "Find Personalised Schemes Based on Eligibility",
+            image: rural_image
         },
         {
             title: "Agricultural Support Programs",
             subtitle: "Access Funding and Resources for Farmers",
-            image: "/api/placeholder/600/400" // Single image placeholder
+            image: image1
         },
         {
             title: "Rural Development Initiatives",
             subtitle: "Empowering Agricultural Communities",
-            image: "/api/placeholder/600/400" // Single image placeholder
+            image: image
         }
+
     ];
 
     // Auto slide functionality

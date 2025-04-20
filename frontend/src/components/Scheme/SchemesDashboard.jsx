@@ -219,6 +219,15 @@ const SchemesDashboard = ({ language }) => {
             {/* Sidebar */}
             <div className="w-64 bg-white shadow-md p-4">
                 <h2 className="text-lg font-bold mb-4">Filters</h2>
+
+                <input
+                    type="text"
+                    placeholder="Search..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full p-2 mb-3 border rounded"
+                />
+
                 <select name="state" onChange={handleFilterChange} className="w-full p-2 mb-3 border rounded">
                     <option value="">Select State</option>
                     <option value="Maharashtra">Maharashtra</option>
@@ -237,22 +246,7 @@ const SchemesDashboard = ({ language }) => {
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                 </select>
-                <input
-                    type="text"
-                    placeholder="Search..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full p-2 border rounded"
-                />
 
-                {/* Age Filter */}
-                <input
-                    type="number"
-                    name="age"
-                    placeholder="Enter Age"
-                    onChange={handleFilterChange}
-                    className="w-full p-2 mb-3 border rounded"
-                />
 
                 {/* Caste Filter */}
                 <select name="caste" onChange={handleFilterChange} className="w-full p-2 mb-3 border rounded">

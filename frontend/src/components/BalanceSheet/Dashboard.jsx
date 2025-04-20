@@ -187,7 +187,8 @@ function Dashboard() {
                         name: entry.negotiation?.grainType ?? "Unknown",
                         status: entry.status ?? "Pending",
                         price: entry.totalAmount ?? 0,
-                        items: entry.quantity ?? 0
+                        items: entry.quantity ?? 0,
+                        buyerEmail: entry.buyer?.email ?? "N/A",
                     }));
 
                 setRecentSales(sortedRecentSales);
@@ -396,7 +397,7 @@ function Dashboard() {
                 {/* Top Bar */}
                 <div className={`flex flex-col md:flex-row md:items-center md:justify-between mb-8 border-b ${borderClass} pb-4`}>
                     <h2 className={`text-2xl font-bold ${textClass} transition-transform duration-300 transform hover:scale-105`}>
-                        Manufacturer Dashboard
+                        Farmer Dashboard
                     </h2>
                     <div className="flex items-center space-x-4 mt-4 md:mt-0">
                         {/* Custom toggle switch placed on the right */}
@@ -481,12 +482,12 @@ function Dashboard() {
                                     <span>Total Amount:</span>
                                     <span className="font-medium">₹{top5Buyers[0]?.totalAmount || 0}</span>
                                 </p>
-                                <p className="flex justify-between items-center">
+                                {/* <p className="flex justify-between items-center">
                                     <span>Status:</span>
                                     <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-medium border border-yellow-200">
                                         {top5Buyers[0]?.status || 'Pending'}
                                     </span>
-                                </p>
+                                </p> */}
                             </div>
                         </div>
                     </div>
@@ -555,7 +556,7 @@ function Dashboard() {
                                 <thead>
                                     <tr className={`text-left border-b ${borderClass} ${textClass}`}>
                                         <th className="pb-3 font-semibold">Name</th>
-                                        <th className="pb-3 font-semibold">Status</th>
+                                        <th className="pb-3 font-semibold">Email</th>
                                         <th className="pb-3 font-semibold">Price</th>
                                         <th className="pb-3 font-semibold">Items Sold</th>
                                     </tr>
@@ -568,16 +569,10 @@ function Dashboard() {
                                         >
                                             <td className="py-3 pl-4">{product.name}</td>
                                             <td className="py-3">
-                                                <span
-                                                    className={`px-2 py-1 rounded-full text-xs font-medium border ${product.status === 'Available'
-                                                        ? 'bg-green-100 text-green-800 border-green-200'
-                                                        : product.status === 'Sold'
-                                                            ? 'bg-blue-100 text-blue-800 border-blue-200'
-                                                            : 'bg-yellow-100 text-yellow-800 border-yellow-200'
-                                                        }`}
-                                                >
-                                                    {product.status}
+                                                <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200">
+                                                    {product.buyerEmail}
                                                 </span>
+
                                             </td>
                                             <td className="py-3">₹{product.price.toLocaleString()}</td>
                                             <td className="py-3">{product.items}</td>

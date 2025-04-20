@@ -82,36 +82,9 @@ def ask_groq(prompt, model="llama3-8b-8192"):
         return "Sorry, I couldn't process your request at the moment."
 
 
-# @app.route('/chat', methods=['POST'])
-# def chat():
-#     data = request.json
-#     message = data.get("message", "")
-#     lang = data.get("lang", "en")  # 'en', 'hi', 'mr'
-
-#     # Translate user input to English
-#     if lang == "hi":
-#         msg_en = en_hi(message)[0]["translation_text"]
-#     elif lang == "mr":
-#         msg_en = mr_en(message)[0]["translation_text"]
-#     else:
-#         msg_en = message
-
-#     # Ask Groq
-#     answer_en = ask_groq(f"Answer the following agricultural question in simple terms for farmers: {msg_en}")
-
-#     # Translate back to original language
-#     if lang == "hi":
-#         answer = hi_en(answer_en)[0]["translation_text"]
-#     elif lang == "mr":
-#         answer = en_mr(answer_en)[0]["translation_text"]
-#     else:
-#         answer = answer_en
-
-#     return jsonify({"reply": answer})
 
 
 
-schemes_collection = db["schemes"]
 
 @app.route('/chat', methods=['POST'])
 def chat():
@@ -120,7 +93,6 @@ def chat():
         message = data.get("message", "")
         lang = data.get("lang", "en")
 
-        # Step 1: Translate message to English if needed
         if lang == "hi":
             msg_en = en_hi(message)[0]["translation_text"]
         elif lang == "mr":
@@ -128,55 +100,25 @@ def chat():
         else:
             msg_en = message
 
-        # Step 2: Fetch all schemes from MongoDB
-        schemes = list(schemes_collection.find().limit(5))
-        print(f"[DEBUG] Retrieved {len(schemes)} schemes from DB")
-
-        # Step 3: Build context with safe access to fields
-        context_parts = []
-        for s in schemes:
-            context_parts.append(
-                f"Title: {s.get('title', 'N/A')}\n"
-                f"Description: {s.get('description', 'N/A')}\n"
-                f"Steps: {s.get('steps', 'N/A')}\n"
-                f"Link: {s.get('link', 'N/A')}\n"
-            )
-
-        context_text = "\n---\n".join(context_parts)
-
-        # Step 4: Create prompt for Groq
+        
         full_prompt = f"""
-You are an agricultural expert helping Indian farmers.
+            You are an expert in Indian government schemes, especially those related to agriculture and farming.
+            Please answer the following question clearly.
 
-Use the following list of government schemes to answer the user's question in a simple and helpful way.
+            Question: {msg_en}
+            Answer:
+        """
 
-Schemes:
-{context_text}
-
-Question: {msg_en}
-Answer:
-"""
-
-        # Step 5: Ask Groq for answer
         answer_en = ask_groq(full_prompt)
 
-        # Step 6: Translate response back to user's language
-        if lang == "hi":
-            answer = hi_en(answer_en)[0]["translation_text"]
-        elif lang == "mr":
-            answer = en_mr(answer_en)[0]["translation_text"]
-        else:
-            answer = answer_en
+        
+        answer = answer_en
 
         return jsonify({"reply": answer})
 
     except Exception as e:
         print(traceback.format_exc())
         return jsonify({"error": str(e)}), 500
-
-
-# os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
-
 
 
 
@@ -348,7 +290,6 @@ def predict_crop():
 
 
 
-
 def get_session_history(session_id: str) -> BaseChatMessageHistory:
     if session_id not in store:
         store[session_id] = ChatMessageHistory()
@@ -496,6 +437,7 @@ def negotiate():
         print("Stack trace:", traceback.format_exc())
         return jsonify({"error": str(e)}), 500
     
-    
+
+
 if __name__ == '__main__':
     app.run(debug=True) 

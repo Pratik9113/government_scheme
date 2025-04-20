@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocation, useSearchParams } from 'react-router-dom';
-
+import { useNavigate } from "react-router-dom";
 const Payment = () => {
+    const navigate = useNavigate();
     const [razorpayLoaded, setRazorpayLoaded] = useState(false);
     const [searchParams] = useSearchParams();
     const quantity = searchParams.get('quantity');
@@ -65,6 +66,7 @@ const Payment = () => {
                             withCredentials: true,
                         });
                         alert("Payment verification successful.");
+                        navigate("/buyer-section");
                     } catch (verifyError) {
                         console.error("Verification Error:", verifyError);
                         alert("Payment verification failed.");

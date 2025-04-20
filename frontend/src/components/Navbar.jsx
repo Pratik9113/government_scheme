@@ -114,6 +114,7 @@
 import React, { useState } from 'react';
 import { Search, ArrowRight, Sun, Menu, X, Wheat, ShoppingCart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import assets from '../assets/assets';
 
 const DigiKissanNavbar = ({ setIsLogin }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -134,7 +135,6 @@ const DigiKissanNavbar = ({ setIsLogin }) => {
                 <div className="flex justify-between items-center h-16">
                     {/* Logo Section */}
                     <div className="flex items-center space-x-3">
-                        <img src='' alt="Government of India emblem" className="h-12 w-auto" />
                         <div className="font-bold text-2xl">
                             <span className="text-green-600">Digi</span>
                             <span className="text-gray-800">Kissan</span>
