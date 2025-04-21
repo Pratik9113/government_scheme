@@ -31,7 +31,7 @@ const server = createServer(app);
 const io = new Server(server, {
     cors: {
         origin: [
-            "https://government-scheme.vercel.app/"
+            "http://localhost:5173"
         ],
         methods: ["GET", "POST"],
         credentials:true,
@@ -42,7 +42,7 @@ const io = new Server(server, {
 // CORS configuration for frontend
 app.use(cors({
     origin: [
-        "https://government-scheme.vercel.app/"
+        "http://localhost:5173"
     ], 
     credentials: true, // Allow credentials (cookies)
 }))
@@ -170,7 +170,7 @@ connectDB();
 
 
 // Start the server and listen on the correct port
-const port = process.env.PORT || 5001;
+const port = process.env.PORT || 3003;
 server.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
