@@ -17,7 +17,6 @@ import BuyerSection from './components/Vendor/BuyerSection';
 const App = () => {
   const [isLogin, setIsLogin] = useState(false);
   const [language, setLanguage] = useState('en');
-
   return (
     <Router>
       <LanguageSelector setLanguage={setLanguage} />
