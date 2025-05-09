@@ -64,9 +64,10 @@ const signupController = async (req, res) => {
         res.cookie("token", token, {
             httpOnly: true, secure: true, sameSite: 'none'
         });
+        const userType = newUser.userType;
 
         return res.status(201).json({ 
-            message: "Signup successful!", 
+            message: userType, 
             data:newUser,
             token: token,
         });
