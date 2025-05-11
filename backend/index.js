@@ -31,7 +31,8 @@ const server = createServer(app);
 const io = new Server(server, {
     cors: {
         origin: [
-            "https://government-scheme.vercel.app"
+            // "https://government-scheme.vercel.app",
+            "http://localhost:5173"
         ],
         methods: ["GET", "POST"],
         credentials:true,
@@ -42,7 +43,8 @@ const io = new Server(server, {
 // CORS configuration for frontend
 app.use(cors({
     origin: [
-        "https://government-scheme.vercel.app"
+        // "https://government-scheme.vercel.app",
+        "http://localhost:5173"
     ], 
     credentials: true, // Allow credentials (cookies)
 }))
