@@ -177,92 +177,101 @@ const ProductManagement = () => {
     useState(() => { fetchProducts(); }, []);
 
     return (
-        <div className="bg-gradient-to-br from-green-50 via-white to-green-100 p-6 rounded-2xl shadow-2xl border border-green-200">
-            <h2 className="text-3xl font-bold text-green-900 mb-6 text-center">🌾 Manage Your Products</h2>
-            <div className="space-y-6">
+        <div className="bg-gray-100 p-4 rounded">
+            <h2 className="text-lg font-bold mb-4 text-center">Product Management</h2>
+
+            <div className="space-y-3">
                 {products.map((product) => (
-                    <div
-                        key={product._id}
-                        className="p-6 bg-white border border-green-100 rounded-xl shadow hover:shadow-lg transition-all duration-300"
-                    >
+                    <div key={product._id} className="bg-white p-3 border rounded shadow">
                         {editingProduct === product._id ? (
-                            <div className="grid gap-4 md:grid-cols-2">
-                                <input
-                                    type="text"
-                                    name="grainType"
-                                    value={editDetails.grainType}
-                                    onChange={handleEditInputChange}
-                                    placeholder="Grain Type"
-                                    className="p-3 border rounded-lg"
-                                />
-                                <input
-                                    type="text"
-                                    name="cropType"
-                                    value={editDetails.cropType}
-                                    onChange={handleEditInputChange}
-                                    placeholder="Crop Type"
-                                    className="p-3 border rounded-lg"
-                                />
-                                <input
-                                    type="number"
-                                    name="pricePerKg"
-                                    value={editDetails.pricePerKg}
-                                    onChange={handleEditInputChange}
-                                    placeholder="Price per Kg"
-                                    className="p-3 border rounded-lg"
-                                />
-                                <input
-                                    type="number"
-                                    name="availableQuantity"
-                                    value={editDetails.availableQuantity}
-                                    onChange={handleEditInputChange}
-                                    placeholder="Available Quantity"
-                                    className="p-3 border rounded-lg"
-                                />
-                                <textarea
-                                    name="description"
-                                    value={editDetails.description}
-                                    onChange={handleEditInputChange}
-                                    placeholder="Description"
-                                    className="p-3 border rounded-lg md:col-span-2 min-h-[80px]"
-                                />
-                                <div className="flex gap-3 md:col-span-2 justify-end">
+                            <div className="space-y-2">
+                                <div>
+                                    <label className="block text-sm mb-1">Grain Type</label>
+                                    <input
+                                        type="text"
+                                        name="grainType"
+                                        value={editDetails.grainType}
+                                        onChange={handleEditInputChange}
+                                        className="p-1 border rounded w-full"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm mb-1">Crop Type</label>
+                                    <input
+                                        type="text"
+                                        name="cropType"
+                                        value={editDetails.cropType}
+                                        onChange={handleEditInputChange}
+                                        className="p-1 border rounded w-full"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm mb-1">Price per Kg (₹)</label>
+                                    <input
+                                        type="number"
+                                        name="pricePerKg"
+                                        value={editDetails.pricePerKg}
+                                        onChange={handleEditInputChange}
+                                        className="p-1 border rounded w-full"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm mb-1">Available Quantity (Kg)</label>
+                                    <input
+                                        type="number"
+                                        name="availableQuantity"
+                                        value={editDetails.availableQuantity}
+                                        onChange={handleEditInputChange}
+                                        className="p-1 border rounded w-full"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm mb-1">Description</label>
+                                    <textarea
+                                        name="description"
+                                        value={editDetails.description}
+                                        onChange={handleEditInputChange}
+                                        className="p-1 border rounded w-full"
+                                        rows="2"
+                                    />
+                                </div>
+                                <div className="flex gap-2 justify-end mt-2">
                                     <button
                                         onClick={handleUpdateSubmit}
-                                        className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
+                                        className="bg-blue-500 text-white px-3 py-1 rounded"
                                     >
-                                        💾 Update
+                                        Save
                                     </button>
                                     <button
                                         onClick={() => setEditingProduct(null)}
-                                        className="bg-gray-400 text-white px-5 py-2 rounded-lg hover:bg-gray-600"
+                                        className="bg-gray-500 text-white px-3 py-1 rounded"
                                     >
-                                        ❌ Cancel
+                                        Cancel
                                     </button>
                                 </div>
                             </div>
                         ) : (
-                            <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
-                                <div className="space-y-1">
-                                    <h3 className="text-xl font-semibold text-green-800">
-                                        {product.cropType} - {product.grainType}
-                                    </h3>
-                                    <p className="text-green-700">Price: ₹{product.pricePerKg}/Kg</p>
-                                    <p className="text-green-700">Available: {product.availableQuantity} Kg</p>
-                                    <p className="text-sm text-gray-600 italic">{product.description}</p>
+                            <div className="card-content">
+                                <h3 className="font-medium">
+                                    {product.cropType} - {product.grainType}
+                                </h3>
+                                <div className="text-sm mt-1">
+                                    <p>Price: ₹{product.pricePerKg}/Kg</p>
+                                    <p>Available: {product.availableQuantity} Kg</p>
+                                    <p className="text-gray-600 mt-1">{product.description}</p>
                                 </div>
-                                <div className="mt-3 md:mt-0 flex gap-3">
+                                <div className="flex gap-2 mt-2">
                                     <button
                                         onClick={() => handleEditClick(product)}
-                                        className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600"
+                                        className="bg-yellow-500 text-white px-2 py-1 rounded text-sm"
                                     >
-                                        ✏️ Edit
+                                        Edit
                                     </button>
                                     <button
                                         onClick={() => deleteProduct(product._id)}
-                                        className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+                                        className="bg-red-500 text-white px-2 py-1 rounded text-sm"
                                     >
-                                        🗑 Delete
+                                        Delete
                                     </button>
                                 </div>
                             </div>
@@ -298,7 +307,7 @@ const CropPrediction = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-green-100 to-lime-200 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-gradient-to-br  flex items-center justify-center p-4">
             <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-lg">
                 <h1 className="text-3xl font-bold text-green-800 text-center mb-6">🌾 Crop Predictor</h1>
 
