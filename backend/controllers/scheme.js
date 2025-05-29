@@ -3,7 +3,7 @@ import SchemaModel from "../models/SchemeModels.js";
 
 const getSchemeController = async (req, res) => {
     try {
-        const data = await SchemaModel.find().limit(200);
+        const data = await SchemaModel.find().limit(5);
         const lang = req.query.lang || "hi";
         const searchQuery = req.query.searchQuery || "";
 

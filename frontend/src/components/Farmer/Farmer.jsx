@@ -1,62 +1,60 @@
 import React, { useState } from 'react';
 import axios from "axios";
 import Dashboard from '../BalanceSheet/Dashboard';
+import { Menu } from "lucide-react";
 
 const FarmerDashboard = () => {
     const [activeTab, setActiveTab] = useState("submission");
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+    const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+
     return (
-        <div className="flex min-h-screen bg-gray-100">
+        <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
+            {/* Mobile Navbar */}
+            <div className="flex items-center justify-between bg-green-700 text-white p-4 md:hidden">
+                <h2 className="text-xl font-bold">Farmer Panel</h2>
+                <button onClick={toggleSidebar}>
+                    <Menu className="w-6 h-6" />
+                </button>
+            </div>
+
             {/* Sidebar */}
-            <div className="w-64 bg-green-700 text-white p-6 space-y-6">
-                <h2 className="text-2xl font-bold text-center">Farmer Panel</h2>
+            <div className={`bg-green-700 text-white w-full md:w-64 p-6 space-y-6 absolute md:static top-0 left-0 z-40 h-screen transform md:translate-x-0 transition-transform duration-300 ease-in-out ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
+                <h2 className="text-2xl font-bold text-center hidden md:block">Farmer Panel</h2>
                 <nav className="space-y-4">
-                    <button
-                        className={`w-full text-left px-4 py-2 rounded-lg transition ${activeTab === "submission" ? "bg-green-500" : "hover:bg-green-600"}`}
-                        onClick={() => setActiveTab("submission")}
-                    >
-                        📋 Product Submission
-                    </button>
-                    <button
-                        className={`w-full text-left px-4 py-2 rounded-lg transition ${activeTab === "viewProducts" ? "bg-green-500" : "hover:bg-green-600"}`}
-                        onClick={() => setActiveTab("viewProducts")}
-                    >
-                        🛒 Manage Products
-                    </button>
-
-                    <button
-                        className={`w-full text-left px-4 py-2 rounded-lg transition ${activeTab === "balanceSheet" ? "bg-green-500" : "hover:bg-green-600"}`}
-                        onClick={() => {
-                            setActiveTab("balanceSheet")
-                            setIsSidebarOpen(true);
-                        }}
-                    >
-                        🛒 Balance Sheet
-                    </button>
-
-                    <button
-                        className={`w-full text-left px-4 py-2 rounded-lg transition ${activeTab === "cropPrediction" ? "bg-green-500" : "hover:bg-green-600"}`}
-                        onClick={() => {
-                            setActiveTab("cropPrediction")
-                            setIsSidebarOpen(true);
-                        }}
-                    >
-                        🛒 Crop Prediction
-                    </button>
+                    {["submission", "viewProducts", "balanceSheet", "cropPrediction"].map((tab, idx) => (
+                        <button
+                            key={idx}
+                            className={`w-full text-left px-4 py-2 rounded-lg transition ${activeTab === tab ? "bg-green-500" : "hover:bg-green-600"
+                                }`}
+                            onClick={() => {
+                                setActiveTab(tab);
+                                setIsSidebarOpen(false); // Close sidebar on mobile
+                            }}
+                        >
+                            {tab === "submission" && "📋 Product Submission"}
+                            {tab === "viewProducts" && "🛒 Manage Products"}
+                            {tab === "balanceSheet" && "📊 Balance Sheet"}
+                            {tab === "cropPrediction" && "🌾 Crop Prediction"}
+                        </button>
+                    ))}
                 </nav>
             </div>
 
             {/* Main Content */}
-            <div className="flex-1 p-8">
+            <div className="flex-1 p-6 mt-4 md:mt-0">
                 {activeTab === "submission" && <FarmerProductInterface />}
                 {activeTab === "viewProducts" && <ProductManagement />}
-                {activeTab === "balanceSheet" && <Dashboard isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />}
+                {activeTab === "balanceSheet" && (
+                    <Dashboard isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
+                )}
                 {activeTab === "cropPrediction" && <CropPrediction />}
             </div>
         </div>
     );
 };
+
 
 const FarmerProductInterface = () => {
     const [productDetails, setProductDetails] = useState({
@@ -177,103 +175,117 @@ const ProductManagement = () => {
     useState(() => { fetchProducts(); }, []);
 
     return (
-        <div className="bg-gray-100 p-4 rounded">
-            <h2 className="text-lg font-bold mb-4 text-center">Product Management</h2>
+        <div className="max-w-6xl mx-auto p-4 bg-white rounded-lg shadow-sm">
+            <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">Manage Your Products</h2>
 
-            <div className="space-y-3">
+            <div className="space-y-4">
                 {products.map((product) => (
-                    <div key={product._id} className="bg-white p-3 border rounded shadow">
+                    <div key={product._id} className="border border-gray-200 rounded-lg overflow-hidden transition-all hover:shadow-md">
                         {editingProduct === product._id ? (
-                            <div className="space-y-2">
-                                <div>
-                                    <label className="block text-sm mb-1">Grain Type</label>
-                                    <input
-                                        type="text"
-                                        name="grainType"
-                                        value={editDetails.grainType}
-                                        onChange={handleEditInputChange}
-                                        className="p-1 border rounded w-full"
-                                    />
+                            <div className="p-4 space-y-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Grain Type</label>
+                                        <input
+                                            type="text"
+                                            name="grainType"
+                                            value={editDetails.grainType}
+                                            onChange={handleEditInputChange}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Crop Type</label>
+                                        <input
+                                            type="text"
+                                            name="cropType"
+                                            value={editDetails.cropType}
+                                            onChange={handleEditInputChange}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Price per Kg (₹)</label>
+                                        <input
+                                            type="number"
+                                            name="pricePerKg"
+                                            value={editDetails.pricePerKg}
+                                            onChange={handleEditInputChange}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Available Quantity (Kg)</label>
+                                        <input
+                                            type="number"
+                                            name="availableQuantity"
+                                            value={editDetails.availableQuantity}
+                                            onChange={handleEditInputChange}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                        />
+                                    </div>
                                 </div>
                                 <div>
-                                    <label className="block text-sm mb-1">Crop Type</label>
-                                    <input
-                                        type="text"
-                                        name="cropType"
-                                        value={editDetails.cropType}
-                                        onChange={handleEditInputChange}
-                                        className="p-1 border rounded w-full"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm mb-1">Price per Kg (₹)</label>
-                                    <input
-                                        type="number"
-                                        name="pricePerKg"
-                                        value={editDetails.pricePerKg}
-                                        onChange={handleEditInputChange}
-                                        className="p-1 border rounded w-full"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm mb-1">Available Quantity (Kg)</label>
-                                    <input
-                                        type="number"
-                                        name="availableQuantity"
-                                        value={editDetails.availableQuantity}
-                                        onChange={handleEditInputChange}
-                                        className="p-1 border rounded w-full"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm mb-1">Description</label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                                     <textarea
                                         name="description"
                                         value={editDetails.description}
                                         onChange={handleEditInputChange}
-                                        className="p-1 border rounded w-full"
-                                        rows="2"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                        rows="3"
                                     />
                                 </div>
-                                <div className="flex gap-2 justify-end mt-2">
-                                    <button
-                                        onClick={handleUpdateSubmit}
-                                        className="bg-blue-500 text-white px-3 py-1 rounded"
-                                    >
-                                        Save
-                                    </button>
+                                <div className="flex justify-end space-x-3 pt-2">
                                     <button
                                         onClick={() => setEditingProduct(null)}
-                                        className="bg-gray-500 text-white px-3 py-1 rounded"
+                                        className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
                                     >
                                         Cancel
+                                    </button>
+                                    <button
+                                        onClick={handleUpdateSubmit}
+                                        className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+                                    >
+                                        Save Changes
                                     </button>
                                 </div>
                             </div>
                         ) : (
-                            <div className="card-content">
-                                <h3 className="font-medium">
-                                    {product.cropType} - {product.grainType}
-                                </h3>
-                                <div className="text-sm mt-1">
-                                    <p>Price: ₹{product.pricePerKg}/Kg</p>
-                                    <p>Available: {product.availableQuantity} Kg</p>
-                                    <p className="text-gray-600 mt-1">{product.description}</p>
+                            <div className="p-4">
+                                <div className="flex justify-between items-start">
+                                    <div>
+                                        <h3 className="text-lg font-medium text-gray-800">
+                                            {product.grainType} ({product.cropType})
+                                        </h3>
+                                        <div className="mt-2 space-y-1">
+                                            <p className="text-sm text-gray-600">
+                                                <span className="font-medium">Price:</span> ₹{product.pricePerKg}/kg
+                                            </p>
+                                            <p className="text-sm text-gray-600">
+                                                <span className="font-medium">Stock:</span> {product.availableQuantity} kg available
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="flex space-x-2">
+                                        <button
+                                            onClick={() => handleEditClick(product)}
+                                            className="px-3 py-1 text-sm font-medium text-yellow-700 bg-yellow-100 rounded-md hover:bg-yellow-200"
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            onClick={() => deleteProduct(product._id)}
+                                            className="px-3 py-1 text-sm font-medium text-red-700 bg-red-100 rounded-md hover:bg-red-200"
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
                                 </div>
-                                <div className="flex gap-2 mt-2">
-                                    <button
-                                        onClick={() => handleEditClick(product)}
-                                        className="bg-yellow-500 text-white px-2 py-1 rounded text-sm"
-                                    >
-                                        Edit
-                                    </button>
-                                    <button
-                                        onClick={() => deleteProduct(product._id)}
-                                        className="bg-red-500 text-white px-2 py-1 rounded text-sm"
-                                    >
-                                        Delete
-                                    </button>
-                                </div>
+                                {product.description && (
+                                    <div className="mt-3 pt-3 border-t border-gray-100">
+                                        <p className="text-sm text-gray-600">{product.description}</p>
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>

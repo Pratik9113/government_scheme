@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import axios from "axios";
 import { toast } from 'react-toastify';
 import { useNavigate } from "react-router-dom";
 
 const Login = ({ setIsLogin }) => {
-    const { t } = useTranslation();
     const navigate = useNavigate();
 
     const [currState, setCurrState] = useState("Login");
@@ -55,7 +53,6 @@ const Login = ({ setIsLogin }) => {
                     <h2 className="text-2xl font-bold text-green-700">
                         {currState === "SignUp" ? "Sign Up" : "Login"}
                     </h2>
-                    <span className="text-gray-500">{t("greeting")}</span>
                 </div>
 
                 <form onSubmit={onLogin} className="space-y-4">

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
-const VendorChatBot = ({ userId, negotiation, closeChat }) => {
+
+const VendorChatBot = ({ userId, negotiation, closeChat, defaultMessage }) => {
     const [messages, setMessages] = useState([]);
     const [inputMessage, setInputMessage] = useState('');
     const [loading, setLoading] = useState(false);
@@ -13,14 +14,22 @@ const VendorChatBot = ({ userId, negotiation, closeChat }) => {
     const navigate = useNavigate();
     const messagesEndRef = useRef(null);
 
-    const handlePayment = async () => {
-        alert(`We Are redirect to the payment form , Purchase confirmed! ${vendor_quantity} units of ${negId} and   ${final_price_per_kg} for $${total_price}`);
+    const handlePayment = () => {
+        alert(`Redirecting to payment. Confirmed: ${vendor_quantity} units at ₹${final_price_per_kg}/kg = ₹${total_price}`);
         navigate(`/payment?quantity=${vendor_quantity}&budget=${total_price}&id=${negId}&priceperkg=${final_price_per_kg}`);
-        onClose();
-    }
+        closeChat();
+    };
+
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
+
+    // Show defaultMessage when component mounts
+    useEffect(() => {
+        if (defaultMessage) {
+            setMessages([{ sender: 'Bot', text: defaultMessage }]);
+        }
+    }, [defaultMessage]);
 
     const sendMessage = async () => {
         if (!inputMessage.trim()) return;
@@ -32,7 +41,7 @@ const VendorChatBot = ({ userId, negotiation, closeChat }) => {
         try {
             const response = await axios.post(`${import.meta.env.VITE_FLASK_BACKEND}/negotiate`, {
                 negotiationId: negotiation._id,
-                userId: userId,
+                userId,
                 grainType: negotiation.grainType,
                 pricePerKg: negotiation.pricePerKg,
                 quantity: negotiation.availableQuantity,
@@ -40,9 +49,7 @@ const VendorChatBot = ({ userId, negotiation, closeChat }) => {
                 description: negotiation.description,
                 message: inputMessage,
             });
-            console.log("respose", response);
 
-            // Update the message and show the button if required
             setMessages(prev => [...prev, { sender: 'Bot', text: response.data.reply }]);
             setShowDealButton(response.data.showDealButton);
             set_final_price_per_kg(response.data.pricePerKg);
@@ -50,60 +57,78 @@ const VendorChatBot = ({ userId, negotiation, closeChat }) => {
             set_total_price(response.data.totalPrice);
             setNegId(response.data.negotiationId);
         } catch (error) {
-            console.error('Error sending message:', error);
-            setMessages(prev => [...prev, { sender: 'Bot', text: "Error: Unable to get a response." }]);
+            console.error('Message send failed:', error);
+            setMessages(prev => [...prev, { sender: 'Bot', text: "⚠️ Error: Couldn't respond. Please try again." }]);
         } finally {
             setLoading(false);
+            setInputMessage('');
         }
-
-        setInputMessage('');
     };
 
     return (
-        <div className="fixed bottom-5 right-5 w-80 bg-white shadow-lg rounded-lg p-4 border">
-            <div className="flex justify-between items-center border-b pb-2 mb-2">
-                <h2 className="text-lg font-semibold">Negotiation Chat</h2>
-                <button onClick={closeChat} className="text-red-500 text-lg">&times;</button>
-            </div>
-            <div className="h-60 overflow-y-auto mb-3 border p-2 rounded">
-                {messages.map((msg, index) => (
-                    <div key={index} className={`p-2 my-1 rounded-lg ${msg.sender === 'You' ? 'bg-blue-100 text-right' : 'bg-gray-200'}`}>
-                        <strong>{msg.sender}:</strong> {msg.text}
-                    </div>
-                ))}
-                <div ref={messagesEndRef}></div>
-            </div>
-            <div className="flex">
-                <input
-                    type="text"
-                    className="flex-1 border p-2 rounded-l"
-                    value={inputMessage}
-                    onChange={(e) => setInputMessage(e.target.value)}
-                    placeholder="Type your message..."
-                    disabled={loading}
-                />
-                <button
-                    onClick={sendMessage}
-                    className="bg-blue-500 text-white px-3 py-2 rounded-r disabled:opacity-50"
-                    disabled={loading}
-                >
-                    {loading ? "..." : "Send"}
-                </button>
-            </div>
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+            <div className="bg-white w-full max-w-md max-h-[90vh] mx-4 rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-fadeIn">
 
-            {/* Show the "Deal done" button if the flag is true */}
-            {showDealButton && (
-                <div className="mt-4 flex justify-center">
+                {/* Header */}
+                <div className="bg-green-600 text-white px-5 py-4 flex justify-between items-center">
+                    <h2 className="text-lg font-semibold">💬 Vendor Negotiation Chat</h2>
+                    <button onClick={closeChat} className="text-2xl font-bold hover:text-red-300">&times;</button>
+                </div>
+
+                {/* Chat Body */}
+                <div className="flex-grow overflow-y-auto px-5 py-4 space-y-4 bg-gray-50">
+                    {messages.map((msg, index) => (
+                        <div
+                            key={index}
+                            className={`flex ${msg.sender === 'You' ? 'justify-end' : 'justify-start'}`}
+                        >
+                            <div className={`max-w-[80%] px-4 py-3 rounded-xl text-sm leading-relaxed shadow ${msg.sender === 'You'
+                                ? 'bg-blue-100 text-blue-800'
+                                : 'bg-green-100 text-green-800'
+                                }`}>
+                                <strong className="block text-xs mb-1">{msg.sender}</strong>
+                                {msg.text}
+                            </div>
+                        </div>
+                    ))}
+                    <div ref={messagesEndRef}></div>
+                </div>
+
+                {/* Input Area */}
+                <div className="p-4 border-t bg-white flex gap-3">
+                    <input
+                        type="text"
+                        className="flex-1 border border-gray-300 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        value={inputMessage}
+                        onChange={(e) => setInputMessage(e.target.value)}
+                        placeholder="Type your message..."
+                        onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+                        disabled={loading}
+                    />
                     <button
-                        className="bg-green-500 text-white px-4 py-2 rounded"
-                        onClick={handlePayment}
+                        onClick={sendMessage}
+                        className="bg-blue-600 text-white px-5 py-2 rounded-xl text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
+                        disabled={loading}
                     >
-                        Complete Purchase
+                        {loading ? "..." : "Send"}
                     </button>
                 </div>
-            )}
+
+                {/* Deal Done Button */}
+                {showDealButton && (
+                    <div className="p-4 border-t bg-white flex justify-center">
+                        <button
+                            className="bg-green-500 text-white px-6 py-2 rounded-xl hover:bg-green-600"
+                            onClick={handlePayment}
+                        >
+                            ✅ Confirm & Pay
+                        </button>
+                    </div>
+                )}
+            </div>
         </div>
     );
+
 };
 
 export default VendorChatBot;
