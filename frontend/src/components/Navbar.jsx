@@ -24,7 +24,7 @@ const DigiKissanNavbar = ({ isLogin, setIsLogin }) => {
                         <img src={assets.logo} alt="Government of India emblem" className="h-12 w-auto" />
                         <div className="font-bold text-2xl">
                             <span className="text-green-600">Digi</span>
-                            <span className="text-gray-800">Kissan</span>
+                            <span className="text-gray-800">Kisan</span>
                         </div>
                     </div>
 

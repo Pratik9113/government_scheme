@@ -1,4 +1,6 @@
 import React from 'react';
+import assets from '../../assets/assets';
+import { Link } from 'react-router-dom';
 
 const MySchemeAbout = () => {
     return (
@@ -24,7 +26,7 @@ const MySchemeAbout = () => {
                     </p>
 
                     <button className="inline-flex items-center px-6 py-3 border border-green-600 text-green-600 font-medium rounded hover:bg-green-50 transition-colors">
-                        View More
+                        <Link to="/login">View Mode</Link>
                         <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                         </svg>
@@ -34,7 +36,7 @@ const MySchemeAbout = () => {
                 <div className="w-full lg:w-1/2 relative">
                     <div className="rounded-lg overflow-hidden shadow-lg border-8 border-white">
                         <img
-                            src="/api/placeholder/800/500"
+                            src={assets.slide4}
                             alt="Farmer using myScheme app in field"
                             className="w-full h-full object-cover"
                         />

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-
+import assets from '../../assets/assets';
 const GovernmentSchemesSlider = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -8,17 +8,17 @@ const GovernmentSchemesSlider = () => {
         {
             title: "Discover government schemes for you...",
             subtitle: "Find Personalised Schemes Based of Eligibility",
-            image: "/api/placeholder/600/400" // Single image placeholder
+            image: `${assets.slide1}`// Single image placeholder
         },
         {
             title: "Agricultural Support Programs",
             subtitle: "Access Funding and Resources for Farmers",
-            image: "/api/placeholder/600/400" // Single image placeholder
+            image: `${assets.slide2}` // Single image placeholder
         },
         {
             title: "Rural Development Initiatives",
             subtitle: "Empowering Agricultural Communities",
-            image: "/api/placeholder/600/400" // Single image placeholder
+            image: `${assets.slide3}` // Single image placeholder
         }
     ];
 
@@ -71,7 +71,7 @@ const GovernmentSchemesSlider = () => {
                                 {slide.subtitle}
                             </p>
 
-                            {/* Dots pattern similar to the one in the image */}
+                            {/* // Dots pattern similar to the one in the image */}
                             <div className="grid grid-cols-8 gap-2 mb-6">
                                 {Array(24).fill(0).map((_, i) => (
                                     <div key={i} className="w-2 h-2 bg-green-400 rounded-full"></div>

@@ -12,12 +12,12 @@ const DigiKissanFooter = () => {
             </div>
 
             <div className="container mx-auto px-4 md:px-6">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {/* Company Info */}
                     <div className="md:col-span-1">
                         <div className="mb-4">
                             <span className="text-2xl font-bold">
-                                ©{currentYear} <span className="text-green-400">Digi</span>Kissan
+                                ©{currentYear} <span className="text-green-400">Digi</span>Kisan
                             </span>
                         </div>
 
@@ -95,90 +95,30 @@ const DigiKissanFooter = () => {
                         </ul>
                     </div>
 
-                    {/* Useful Links */}
-                    <div className="md:col-span-1">
-                        <h2 className="text-xl font-semibold mb-6">Useful Links</h2>
-                        <div className="grid grid-cols-2 gap-4">
-                            <a href="#" className="bg-white p-2 rounded flex items-center justify-center">
-                                <img
-                                    src="/api/placeholder/80/40"
-                                    alt="Digital India"
-                                    className="h-8"
-                                />
-                            </a>
-                            <a href="#" className="bg-white p-2 rounded flex items-center justify-center">
-                                <img
-                                    src="/api/placeholder/80/40"
-                                    alt="DigiLocker"
-                                    className="h-8"
-                                />
-                            </a>
-                            <a href="#" className="bg-white p-2 rounded flex items-center justify-center">
-                                <img
-                                    src="/api/placeholder/80/40"
-                                    alt="UMANG"
-                                    className="h-8"
-                                />
-                            </a>
-                            <a href="#" className="bg-white p-2 rounded flex items-center justify-center">
-                                <img
-                                    src="/api/placeholder/80/40"
-                                    alt="India Gov"
-                                    className="h-8"
-                                />
-                            </a>
-                            <a href="#" className="bg-white p-2 rounded flex items-center justify-center">
-                                <img
-                                    src="/api/placeholder/80/40"
-                                    alt="My Gov"
-                                    className="h-8"
-                                />
-                            </a>
-                            <a href="#" className="bg-white p-2 rounded flex items-center justify-center">
-                                <img
-                                    src="/api/placeholder/80/40"
-                                    alt="Data Gov"
-                                    className="h-8"
-                                />
-                            </a>
-                            <a href="#" className="bg-white p-2 rounded flex items-center justify-center">
-                                <img
-                                    src="/api/placeholder/80/40"
-                                    alt="MEITY"
-                                    className="h-8"
-                                />
-                            </a>
-                        </div>
-                    </div>
 
                     {/* Get in touch */}
                     <div className="md:col-span-1">
                         <h2 className="text-xl font-semibold mb-6">Get in touch</h2>
                         <address className="not-italic mb-4">
-                            <p>4th Floor, NeGD, Electronics Niketan, 6</p>
-                            <p>CGO Complex, Lodhi Road, New Delhi -</p>
-                            <p>110003, India</p>
+                            <p>Software Engineer</p>
+                            <p>DSA, Java, cpp</p>
+                            <p>pratik.patil9113@gmail.com</p>
                         </address>
 
                         <p className="mb-4">
-                            <a href="mailto:support-digikissan@digitalindia.gov.in" className="text-green-400 hover:underline break-all">
-                                support-digikissan[at]digitalindia[dot]gov[dot]in
+                            <a href="https://leetcode.com/u/pratik9113_/" className="text-green-400 hover:underline break-all">
+                                Leetcode account - pratik9113_
                             </a>
                         </p>
 
-                        <p>(011) 24303714 (9:00 AM to 5:30 PM)</p>
+                        <p>(9:00 AM to 5:30 PM)</p>
                     </div>
-                </div>
-
-                {/* Bottom copyright */}
-                <div className="mt-8 pt-6 border-t border-gray-700 text-sm text-gray-400">
-                    <p>Last Updated On : 01/04/2025 | v-2.2.2</p>
                 </div>
             </div>
 
             {/* My circle logo */}
             <div className="absolute bottom-6 right-6 w-16 h-16 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-2xl">
-                <span>Di</span>
+                <span>DigiKisan</span>
             </div>
         </footer>
     );

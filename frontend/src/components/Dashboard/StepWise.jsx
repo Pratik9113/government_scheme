@@ -17,7 +17,7 @@ const AgriTechSteps = () => {
                 <h2 className="text-4xl md:text-5xl font-bold">
                     Easy steps to use our
                     <br />
-                    DigiKissan Platform
+                    DigiKisan Platform
                 </h2>
             </div>
 
@@ -103,10 +103,7 @@ const AgriTechSteps = () => {
                 </div>
             </div>
 
-            {/* Green circle with "my" text */}
-            <div className="absolute right-8 bottom-8 w-16 h-16 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg">
-                my
-            </div>
+
         </div>
     );
 };
