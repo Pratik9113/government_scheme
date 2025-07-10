@@ -43,8 +43,8 @@ const io = new Server(server, {
 // CORS configuration for frontend
 app.use(cors({
     origin: [
-        // "https://government-scheme.vercel.app",
-        "http://localhost:5173"
+         "https://government-scheme.vercel.app",
+        // "http://localhost:5173"
     ], 
     credentials: true, // Allow credentials (cookies)
 }))
