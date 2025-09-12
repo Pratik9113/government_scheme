@@ -9,3 +9,7 @@ Flask-PyMongo
 PyMongo
 googletrans
 deep_translator
+numpy
+aiohttp
+requests
+asyncio

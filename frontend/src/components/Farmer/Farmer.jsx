@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import Dashboard from '../BalanceSheet/Dashboard';
 import { Menu } from "lucide-react";
@@ -10,24 +10,23 @@ const FarmerDashboard = () => {
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
     return (
-        <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
+        <div className="flex flex-col md:flex-row min-h-screen bg-gradient-to-br from-emerald-50 to-lime-100">
             {/* Mobile Navbar */}
             <div className="flex items-center justify-between bg-green-700 text-white p-4 md:hidden">
                 <h2 className="text-xl font-bold">Farmer Panel</h2>
-                <button onClick={toggleSidebar}>
+                <button onClick={toggleSidebar} className="rounded-md p-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70">
                     <Menu className="w-6 h-6" />
                 </button>
             </div>
 
             {/* Sidebar */}
-            <div className={`bg-green-700 text-white w-full md:w-64 p-6 space-y-6 absolute md:static top-0 left-0 z-40 h-screen transform md:translate-x-0 transition-transform duration-300 ease-in-out ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
+            <div className={`bg-green-700/95 backdrop-blur text-white w-full md:w-64 p-6 space-y-6 absolute md:static top-0 left-0 z-40 h-screen transform md:translate-x-0 transition-transform duration-300 ease-in-out ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
                 <h2 className="text-2xl font-bold text-center hidden md:block">Farmer Panel</h2>
                 <nav className="space-y-4">
                     {["submission", "viewProducts", "balanceSheet", "cropPrediction"].map((tab, idx) => (
                         <button
                             key={idx}
-                            className={`w-full text-left px-4 py-2 rounded-lg transition ${activeTab === tab ? "bg-green-500" : "hover:bg-green-600"
-                                }`}
+                            className={`w-full text-left px-4 py-2 rounded-lg transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 ${activeTab === tab ? "bg-green-500" : "hover:bg-green-600"}`}
                             onClick={() => {
                                 setActiveTab(tab);
                                 setIsSidebarOpen(false); // Close sidebar on mobile
@@ -90,15 +89,32 @@ const FarmerProductInterface = () => {
     };
 
     return (
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h2 className="text-2xl font-bold text-green-800 mb-4">Register Your Product</h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <input type="text" name="grainType" value={productDetails.grainType} onChange={handleInputChange} placeholder="Grain Type" className="w-full p-3 border rounded" required />
-                <input type="text" name="cropType" value={productDetails.cropType} onChange={handleInputChange} placeholder="Crop Type" className="w-full p-3 border rounded" required />
-                <input type="number" name="pricePerKg" value={productDetails.pricePerKg} onChange={handleInputChange} placeholder="Price Per Kg" className="w-full p-3 border rounded" required />
-                <input type="number" name="availableQuantity" value={productDetails.availableQuantity} onChange={handleInputChange} placeholder="Available Quantity" className="w-full p-3 border rounded" required />
-                <textarea name="description" value={productDetails.description} onChange={handleInputChange} placeholder="Product Description" className="w-full p-3 border rounded min-h-[100px]" required />
-                <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Submit</button>
+        <div className="bg-white/80 backdrop-blur p-6 rounded-xl shadow-sm border border-gray-200">
+            <h2 className="text-2xl font-extrabold text-emerald-800 mb-4">Register Your Product</h2>
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Grain Type</label>
+                    <input type="text" name="grainType" value={productDetails.grainType} onChange={handleInputChange} placeholder="e.g., Wheat" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500" required />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Crop Type</label>
+                    <input type="text" name="cropType" value={productDetails.cropType} onChange={handleInputChange} placeholder="e.g., Rabi" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500" required />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Price Per Kg (₹)</label>
+                    <input type="number" name="pricePerKg" value={productDetails.pricePerKg} onChange={handleInputChange} placeholder="e.g., 25" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500" required />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Available Quantity (Kg)</label>
+                    <input type="number" name="availableQuantity" value={productDetails.availableQuantity} onChange={handleInputChange} placeholder="e.g., 100" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500" required />
+                </div>
+                <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <textarea name="description" value={productDetails.description} onChange={handleInputChange} placeholder="Product Description" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 min-h-[100px]" required />
+                </div>
+                <div className="md:col-span-2 flex justify-end">
+                    <button type="submit" className="bg-emerald-600 text-white px-4 py-2 rounded-md hover:bg-emerald-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500">Submit</button>
+                </div>
             </form>
         </div>
     );
@@ -116,12 +132,15 @@ const ProductManagement = () => {
         description: ''
     });
 
+    const [loading, setLoading] = useState(true);
     const fetchProducts = async () => {
         try {
             const response = await axios.get(`${import.meta.env.VITE_BACKEND}/farmer/get-farmer-crop`, { withCredentials: true });
             setProducts(response.data.data);
+            setLoading(false);
         } catch (error) {
             console.error("Fetch Error:", error);
+            setLoading(false);
         }
     };
 
@@ -172,11 +191,14 @@ const ProductManagement = () => {
         }
     };
 
-    useState(() => { fetchProducts(); }, []);
+    useEffect(() => { fetchProducts(); }, []);
 
     return (
-        <div className="max-w-6xl mx-auto p-4 bg-white rounded-lg shadow-sm">
+        <div className="max-w-6xl mx-auto p-4 bg-white/80 backdrop-blur rounded-xl shadow-sm border border-gray-200">
             <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">Manage Your Products</h2>
+
+            {loading && <div className="text-center text-sm text-gray-600">Loading products...</div>}
+            {!loading && products.length === 0 && <div className="text-center text-sm text-gray-600">No products yet.</div>}
 
             <div className="space-y-4">
                 {products.map((product) => (
@@ -238,13 +260,13 @@ const ProductManagement = () => {
                                 <div className="flex justify-end space-x-3 pt-2">
                                     <button
                                         onClick={() => setEditingProduct(null)}
-                                        className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                                        className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300"
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         onClick={handleUpdateSubmit}
-                                        className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+                                        className="px-4 py-2 text-sm font-medium text-white bg-emerald-600 rounded-md hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                                     >
                                         Save Changes
                                     </button>
@@ -269,13 +291,13 @@ const ProductManagement = () => {
                                     <div className="flex space-x-2">
                                         <button
                                             onClick={() => handleEditClick(product)}
-                                            className="px-3 py-1 text-sm font-medium text-yellow-700 bg-yellow-100 rounded-md hover:bg-yellow-200"
+                                            className="px-3 py-1 text-sm font-medium text-yellow-700 bg-yellow-100 rounded-md hover:bg-yellow-200 focus:outline-none focus:ring-2 focus:ring-yellow-300"
                                         >
                                             Edit
                                         </button>
                                         <button
                                             onClick={() => deleteProduct(product._id)}
-                                            className="px-3 py-1 text-sm font-medium text-red-700 bg-red-100 rounded-md hover:bg-red-200"
+                                            className="px-3 py-1 text-sm font-medium text-red-700 bg-red-100 rounded-md hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-300"
                                         >
                                             Delete
                                         </button>
@@ -319,7 +341,7 @@ const CropPrediction = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br  flex items-center justify-center p-4">
+        <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-lime-100 flex items-center justify-center p-4">
             <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-lg">
                 <h1 className="text-3xl font-bold text-green-800 text-center mb-6">🌾 Crop Predictor</h1>
 

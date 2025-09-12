@@ -10,7 +10,7 @@ import { Chart, CategoryScale, LinearScale, PointElement, LineElement, BarElemen
 Chart.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend);
 import axios from 'axios';
 function Dashboard() {
-    const [theme, setTheme] = useState('dark');
+    const [theme, setTheme] = useState('light');
     const [fullAmount, setFullAmount] = useState(0);
 
 
@@ -72,7 +72,7 @@ function Dashboard() {
                     .slice(0, 5)
                     .map(entry => ({
                         name: entry.negotiation?.grainType ?? "Unknown",
-                        status: entry.status ?? "Pending",
+                        status: "Success", // this are the hard coded 
                         price: entry.totalAmount ?? 0,
                         items: entry.quantity ?? 0
                     }));
@@ -163,6 +163,17 @@ function Dashboard() {
     const borderClass = theme === 'dark' ? 'border-gray-200' : 'border-gray-300';
     const buttonHoverBg = theme === 'dark' ? 'hover:bg-gray-800' : 'hover:bg-gray-100';
 
+    // Farmer-friendly design tokens
+    const pageBg = theme === 'dark'
+        ? 'bg-gradient-to-br from-gray-950 to-emerald-950'
+        : 'bg-gradient-to-br from-emerald-50 to-lime-100';
+    const surfaceClass = theme === 'dark'
+        ? 'bg-gray-900/60 backdrop-blur'
+        : 'bg-white/80 backdrop-blur';
+    const focusRing = theme === 'dark'
+        ? 'focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950'
+        : 'focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-50';
+
     const chartBorderColor = theme === 'dark' ? '#FFFFFF' : '#000000';
     const chartLegendColor = theme === 'dark' ? '#FFFFFF' : '#000000';
     const multiColors = ["#EF4444", "#F59E0B", "#EAB308", "#10B981", "#3B82F6", "#8B5CF6"];
@@ -212,7 +223,7 @@ function Dashboard() {
     const profitPercentage = "12.5%";
 
     return (
-        <div className={`flex h-screen ${bgClass}`}>
+        <div className={`flex h-screen ${pageBg}`}>
             {/* Inline CSS for custom toggle switch */}
             <style>{`
         .switch {
@@ -267,23 +278,23 @@ function Dashboard() {
             <main className="flex-1 overflow-y-auto p-8">
                 {/* Top Bar */}
                 <div className={`flex flex-col md:flex-row md:items-center md:justify-between mb-8 border-b ${borderClass} pb-4`}>
-                    <h2 className={`text-2xl font-bold ${textClass} transition-transform duration-300 transform hover:scale-105`}>
-                        Manufacturer Dashboard
+                    <h2 className={`text-2xl md:text-3xl font-extrabold ${textClass} tracking-tight transition-transform duration-300 transform hover:scale-105`}>
+                        Farmer Dashboard
                     </h2>
                     <div className="flex items-center space-x-4 mt-4 md:mt-0">
                         {/* Custom toggle switch placed on the right */}
-                        {/* <label className="switch">
+                        <label className="switch">
                             <input
                                 type="checkbox"
                                 checked={theme === 'light'}
                                 onChange={toggleTheme}
                             />
                             <span className="slider round"></span>
-                        </label> */}
-                        <button className={`p-2 rounded-full ${buttonHoverBg} border ${borderClass} transition-transform duration-300 transform hover:scale-110`}>
+                        </label>
+                        <button aria-label="Notifications" className={`p-2 rounded-full ${buttonHoverBg} border ${borderClass} transition-transform duration-300 transform hover:scale-110 ${focusRing}`}>
                             <Bell className="w-6 h-6" style={{ color: theme === 'dark' ? '#FFFFFF' : '#000000' }} />
                         </button>
-                        <button className={`p-2 rounded-full ${buttonHoverBg} border ${borderClass} transition-transform duration-300 transform hover:scale-110`}>
+                        <button aria-label="Account" className={`p-2 rounded-full ${buttonHoverBg} border ${borderClass} transition-transform duration-300 transform hover:scale-110 ${focusRing}`}>
                             <User className="w-6 h-6" style={{ color: theme === 'dark' ? '#FFFFFF' : '#000000' }} />
                         </button>
                     </div>
@@ -292,9 +303,9 @@ function Dashboard() {
                 {/* Profit Section */}
                 <div className="mb-8">
                     <div className="grid grid-cols-1">
-                        <div className={`p-8 rounded-lg border ${borderClass} shadow-md transition-all duration-300 transform hover:scale-105 ${bgClass}`}>
+                        <div className={`p-8 rounded-lg border ${borderClass} shadow-md transition-all duration-300 transform hover:scale-105 ${surfaceClass}`}>
                             <div className="flex items-center space-x-2">
-                                <h2 className={`text-3xl font-bold ${textClass}`}></h2>
+                                <h2 className={`text-3xl font-bold ${textClass}`}>This Month</h2>
                                 <ArrowUpRight className="w-4 h-4" style={{ color: theme === 'dark' ? '#00FF00' : '#008000' }} />
                                 <span className={`text-lg font-medium ${textClass}`}>Profit</span>
                             </div>
@@ -318,7 +329,7 @@ function Dashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {/* Highest Selling Product */}
                     <div
-                        className={`p-6 rounded-lg border ${borderClass} shadow-sm transition-all duration-300 transform hover:scale-105 ${bgClass}`}
+                        className={`p-6 rounded-lg border ${borderClass} shadow-sm transition-all duration-300 transform hover:scale-105 ${surfaceClass}`}
                         style={{ animationDelay: '0.1s' }}
                     >
                         <h2 className={`text-lg font-semibold mb-4 flex items-center justify-between ${textClass}`}>
@@ -356,7 +367,7 @@ function Dashboard() {
                                 <p className="flex justify-between items-center">
                                     <span>Status:</span>
                                     <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-medium border border-yellow-200">
-                                        {top5Buyers[0]?.status || 'Pending'}
+                                        {'Success'}
                                     </span>
                                 </p>
                             </div>
@@ -365,7 +376,7 @@ function Dashboard() {
 
                     {/* Top 5 Buyers */}
                     <div
-                        className={`p-6 rounded-lg border ${borderClass} shadow-sm transition-all duration-300 transform hover:scale-105 ${bgClass}`}
+                        className={`p-6 rounded-lg border ${borderClass} shadow-sm transition-all duration-300 transform hover:scale-105 ${surfaceClass}`}
                         style={{ animationDelay: '0.2s' }}
                     >
                         <h2 className={`text-lg font-semibold mb-4 flex items-center justify-between ${textClass}`}>
@@ -401,7 +412,7 @@ function Dashboard() {
 
 
                     {/* Sales Data */}
-                    <div className={`p-6 rounded-lg border ${borderClass} shadow-sm transition-all duration-300 transform hover:scale-105 ${bgClass}`} style={{ animationDelay: '0.3s' }}>
+                    <div className={`p-6 rounded-lg border ${borderClass} shadow-sm transition-all duration-300 transform hover:scale-105 ${surfaceClass}`} style={{ animationDelay: '0.3s' }}>
                         <h2 className={`text-lg font-semibold mb-4 flex items-center justify-between ${textClass}`}>
                             Sales Data
                             <ArrowUpRight className="w-5 h-5 transition-transform duration-300 transform hover:rotate-12" style={{ color: theme === 'dark' ? '#FFFFFF' : '#000000' }} />
@@ -416,7 +427,7 @@ function Dashboard() {
                 </div>
 
                 {/* Recent Product History */}
-                <div className={`mt-8 rounded-lg border ${borderClass} shadow-sm transition-all duration-300 ${bgClass}`} style={{ animationDelay: '0.4s' }}>
+                <div className={`mt-8 rounded-lg border ${borderClass} shadow-sm transition-all duration-300 ${surfaceClass}`} style={{ animationDelay: '0.4s' }}>
                     <div className="p-6">
                         <h2 className={`text-lg font-semibold mb-4 flex items-center justify-between ${textClass}`}>
                             Recent Product History
@@ -436,7 +447,7 @@ function Dashboard() {
                                     {recentSales.map((product, index) => (
                                         <tr
                                             key={index}
-                                            className={`border-b ${borderClass} hover:bg-${theme === 'dark' ? 'gray-900' : 'gray-100'} transition-all duration-300`}
+                                            className={`border-b ${borderClass} ${theme === 'dark' ? 'hover:bg-gray-900' : 'hover:bg-gray-100'} transition-all duration-300`}
                                         >
                                             <td className="py-3 pl-4">{product.name}</td>
                                             <td className="py-3">
@@ -445,10 +456,10 @@ function Dashboard() {
                                                         ? 'bg-green-100 text-green-800 border-green-200'
                                                         : product.status === 'Sold'
                                                             ? 'bg-blue-100 text-blue-800 border-blue-200'
-                                                            : 'bg-yellow-100 text-yellow-800 border-yellow-200'
+                                                            : 'bg-green-100 text-green-800 border-green-200'
                                                         }`}
                                                 >
-                                                    {product.status}
+                                                    {"Success"}
                                                 </span>
                                             </td>
                                             <td className="py-3">₹{product.price.toLocaleString()}</td>
@@ -464,11 +475,11 @@ function Dashboard() {
 
                 {/* Graphs Section */}
                 <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className={`p-6 rounded-lg border ${borderClass} shadow-md transition-all duration-300 transform hover:scale-105 ${bgClass}`}>
+                    <div className={`p-6 rounded-lg border ${borderClass} shadow-md transition-all duration-300 transform hover:scale-105 ${surfaceClass}`}>
                         <h2 className={`text-lg font-semibold mb-4 ${textClass}`}>Sales Trend</h2>
                         <Line data={salesData} options={salesOptions} />
                     </div>
-                    <div className={`p-6 rounded-lg border ${borderClass} shadow-md transition-all duration-300 transform hover:scale-105 ${bgClass}`}>
+                    <div className={`p-6 rounded-lg border ${borderClass} shadow-md transition-all duration-300 transform hover:scale-105 ${surfaceClass}`}>
                         <h2 className={`text-lg font-semibold mb-4 ${textClass}`}>Profit Trend</h2>
                         <Bar data={profitData} options={profitOptions} />
                     </div>

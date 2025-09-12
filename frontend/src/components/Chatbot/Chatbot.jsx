@@ -14,12 +14,12 @@ export default function Chatbot() {
         setChat([...chat, userMsg]);
 
         try {
-            const res = await axios.post('http://127.0.0.1:5000/chat', {
+            const res = await axios.post(`${import.meta.env.VITE_BACKEND}/bot/chat`, {
                 message: input,
                 lang: lang,
             });
 
-            const botMsg = { sender: 'Bot', text: res.data.reply };
+            const botMsg = { sender: 'Bot', text: res.data.response };
             setChat((prev) => [...prev, botMsg]);
         } catch (err) {
             console.error(err);
