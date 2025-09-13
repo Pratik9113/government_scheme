@@ -26,6 +26,7 @@ import negotiateModel from "./models/negotiate.js";
 import BuyerModel from "./models/Buyer.js";
 import BuyerRouter from "./routes/buyer.js";
 import ChatbotRouter from "./routes/ChatbotRoute.js";
+import negotiationRoutes from "./routes/NegogiateRoute.js";
 
 const app = express();
 const server = createServer(app); 
@@ -44,7 +45,7 @@ const io = new Server(server, {
 // CORS configuration for frontend
 app.use(cors({
     origin: [
-         "https://government-scheme.vercel.app",
+        "https://government-scheme.vercel.app",
         // "http://localhost:5173"
     ], 
     credentials: true, // Allow credentials (cookies)
@@ -63,8 +64,7 @@ app.use("/user-prompt", PromptRouter);
 app.use("/vendor", VendorRouter);
 app.use("/buyers", BuyerRouter);
 app.use("/bot", ChatbotRouter);
-
-
+app.use("/negotiation", negotiationRoutes);
 
 // Initialize Razorpay instance
 const razorpay = new Razorpay({

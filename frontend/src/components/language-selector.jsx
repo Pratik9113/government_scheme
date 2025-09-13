@@ -29,7 +29,7 @@ const LanguageSelector = ({ setLanguage }) => {
     };
 
     return (
-        <div className="fixed bottom-20 right-8">
+        <div className="fixed bottom-20 right-8 z-50">
             <button
                 className="p-3 rounded-full shadow-lg bg-blue-500 text-white hover:bg-blue-600"
                 onClick={() => setIsOpen(!isOpen)}
@@ -37,7 +37,7 @@ const LanguageSelector = ({ setLanguage }) => {
                 <FaGlobe size={20} />
             </button>
             {isOpen && (
-                <div className="absolute bottom-12 right-0 w-40 bg-white shadow-md rounded-lg p-2 flex flex-col space-y-2">
+                <div className="absolute bottom-12 right-0 w-40 bg-white shadow-md rounded-lg p-2 flex flex-col space-y-2 z-50">
                     {languages.map((lng) => (
                         <button
                             key={lng.code}
@@ -50,6 +50,7 @@ const LanguageSelector = ({ setLanguage }) => {
                 </div>
             )}
         </div>
+
     );
 };
 
