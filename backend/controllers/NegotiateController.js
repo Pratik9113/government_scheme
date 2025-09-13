@@ -3,9 +3,9 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const GROQ_API_KEY = process.env.digikissan;
+const GROQ_API_KEY = process.env.CHATBOT_GROQ_API;
 if (!GROQ_API_KEY) {
-  throw new Error("API key not found. Please set digikissan in .env file.");
+  throw new Error("API key not found. Please set CHATBOT_GROQ_API in .env file.");
 }
 
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
